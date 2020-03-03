@@ -4,7 +4,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * @author howwrite
- * @Description: 关于微信的配置
+ * @Description 关于微信的配置
  * @create 2019/12/15 15:27
  */
 @ConfigurationProperties(prefix = "mars.weixin")

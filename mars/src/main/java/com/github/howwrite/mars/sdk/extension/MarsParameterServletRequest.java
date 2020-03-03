@@ -8,7 +8,7 @@ import java.util.*;
 
 /**
  * @author howwrite
- * @Description: 可以自定义Parameter的request
+ * @Description 扩展request，实现可以加入parameter
  * @create 2019/10/5 22:20
  */
 public class MarsParameterServletRequest extends HttpServletRequestWrapper {

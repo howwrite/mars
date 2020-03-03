@@ -2,7 +2,7 @@ package com.github.howwrite.mars.sdk.exception;
 
 /**
  * @author howwrite
- * @Description:
+ * @Description 错误码对应列表
  * @create 2019/12/15 21:11
  */
 public interface MarsErrorCode {

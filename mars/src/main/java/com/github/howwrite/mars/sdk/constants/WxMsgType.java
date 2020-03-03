@@ -6,4 +6,5 @@ package com.github.howwrite.mars.sdk.constants;
  */
 public interface WxMsgType {
     String TEXT_TYPE = "text";
+    String IMAGE_TYPE = "image";
 }

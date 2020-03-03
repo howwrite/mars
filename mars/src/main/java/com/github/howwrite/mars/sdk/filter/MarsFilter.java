@@ -17,7 +17,7 @@ import java.util.Map;
 
 /**
  * @author howwrite
- * @Description: 过滤微信相关请求，解析参数中加密的字段值
+ * @Description 过滤微信相关请求，解析参数中加密的字段值
  * @create 2019/12/15 15:25
  */
 public class MarsFilter implements Filter {

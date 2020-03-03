@@ -6,7 +6,7 @@ package com.github.howwrite.mars.sdk.request;
  * @author howwrite
  * @date 2020/1/1 下午10:32:26
  */
-public class WxRequest {
+public class MarsWxRequest {
     /**
      * 开发者微信号
      */

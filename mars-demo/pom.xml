@@ -5,7 +5,7 @@
     <parent>
         <artifactId>mars-project</artifactId>
         <groupId>com.github.howwrite</groupId>
-        <version>0.0.1-SNAPSHOT</version>
+        <version>1.0.RELEASE</version>
     </parent>
     <artifactId>mars-demo</artifactId>
     <name>mars-demo</name>
@@ -27,7 +27,6 @@
         <dependency>
             <groupId>com.github.howwrite</groupId>
             <artifactId>mars</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
 

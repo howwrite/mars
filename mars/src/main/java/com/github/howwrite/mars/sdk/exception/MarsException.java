@@ -2,7 +2,7 @@ package com.github.howwrite.mars.sdk.exception;
 
 /**
  * @author howwrite
- * @Description:
+ * @Description
  * @create 2019/12/15 21:09
  */
 public class MarsException extends RuntimeException {

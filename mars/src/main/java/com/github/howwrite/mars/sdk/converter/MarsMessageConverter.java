@@ -1,6 +1,6 @@
-package com.github.howwrite.mars.sdk.advice;
+package com.github.howwrite.mars.sdk.converter;
 
-import com.github.howwrite.mars.sdk.response.WxResponse;
+import com.github.howwrite.mars.sdk.response.BaseMarsWxResponse;
 import com.github.howwrite.mars.sdk.utils.WxUtils;
 import org.springframework.http.HttpInputMessage;
 import org.springframework.http.HttpOutputMessage;
@@ -23,7 +23,7 @@ import java.util.List;
  * @date 2020/3/1 下午2:47:22
  */
 @Component
-public class MarsMessageConverter implements HttpMessageConverter<WxResponse> {
+public class MarsMessageConverter implements HttpMessageConverter<BaseMarsWxResponse> {
 
     @Resource
     private WxUtils wxUtils;
@@ -35,7 +35,7 @@ public class MarsMessageConverter implements HttpMessageConverter<WxResponse> {
 
     @Override
     public boolean canWrite(Class<?> clazz, MediaType mediaType) {
-        return ClassUtils.isAssignable(WxResponse.class, clazz);
+        return ClassUtils.isAssignable(BaseMarsWxResponse.class, clazz);
     }
 
     @Override
@@ -44,16 +44,16 @@ public class MarsMessageConverter implements HttpMessageConverter<WxResponse> {
     }
 
     @Override
-    public WxResponse read(Class<? extends WxResponse> clazz, HttpInputMessage inputMessage) throws IOException, HttpMessageNotReadableException {
+    public BaseMarsWxResponse read(Class<? extends BaseMarsWxResponse> clazz, HttpInputMessage inputMessage) throws IOException, HttpMessageNotReadableException {
         return null;
     }
 
     @Override
-    public void write(WxResponse wxResponse, MediaType contentType, HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException {
+    public void write(BaseMarsWxResponse baseMarsWxResponse, MediaType contentType, HttpOutputMessage outputMessage) throws IOException, HttpMessageNotWritableException {
         String createTime = String.valueOf(System.currentTimeMillis());
-        String result = wxResponse.convertXmlString(createTime);
-        if (wxResponse.getEncryption()) {
-            result = wxUtils.encryptMsg(result, createTime, createTime);
+        String result = baseMarsWxResponse.convertXmlString(createTime);
+        if (baseMarsWxResponse.getEncryption()) {
+            result = wxUtils.encryptMsg(result, createTime);
         }
         StreamUtils.copy(result, StandardCharsets.UTF_8, outputMessage.getBody());
     }

@@ -25,7 +25,7 @@ import java.util.Map;
 
 /**
  * @author howwrite
- * @Description: 微信消息工具类，涉及消息加解密
+ * @Description 微信消息工具类，涉及消息加解密
  * @create 2019/12/15 21:50
  */
 @Component
@@ -128,6 +128,13 @@ public class WxUtils {
         return sb.toString();
     }
 
+
+    /**
+     * {@link #encryptMsg(String, String, String)}
+     */
+    public String encryptMsg(String replyMsg, String timeStamp) {
+        return encryptMsg(replyMsg, timeStamp, null);
+    }
 
     /**
      * 将公众平台回复用户的消息加密打包.

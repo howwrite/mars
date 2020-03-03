@@ -17,7 +17,7 @@ import javax.annotation.PostConstruct;
 
 /**
  * @author howwrite
- * @Description:
+ * @Description 自动装配mars所需的bean
  * @create 2019/12/15 15:38
  */
 @Configuration
@@ -31,7 +31,7 @@ public class MarsStarterAutoConfiguration {
     @PostConstruct
     public void registerMessageSource() {
         if (!ObjectUtils.isEmpty(abstractResourceBasedMessageSource)) {
-            abstractResourceBasedMessageSource.getBasenameSet().add("messages-mars");
+            abstractResourceBasedMessageSource.getBasenameSet().add("mars-messages");
         }
     }
 

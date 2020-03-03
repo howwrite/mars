@@ -1,29 +1,21 @@
 package com.github.howwrite.mars.marsdemo.controller;
 
-import com.github.howwrite.mars.sdk.request.WxRequest;
-import com.github.howwrite.mars.sdk.response.WxResponse;
-import org.springframework.web.bind.annotation.GetMapping;
+import com.github.howwrite.mars.sdk.request.MarsWxRequest;
+import com.github.howwrite.mars.sdk.response.BaseMarsWxResponse;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 /**
  * @author howwrite
- * @Description:
+ * @Description demo controller
  * @create 2019/12/15 15:31
  */
 @RestController
 public class MarsController {
 
     @PostMapping("/mars")
-    public WxResponse helloMars(WxRequest request) {
+    public BaseMarsWxResponse helloMars(MarsWxRequest request) {
 
-        return WxResponse.createTextResponse(request, "hello " + request.getContent());
-    }
-
-    @GetMapping("/dd")
-    public WxResponse hh() {
-        WxResponse wxResponse = new WxResponse();
-        wxResponse.setContent("dddccc");
-        return wxResponse;
+        return BaseMarsWxResponse.createTextResponse(request, "hello " + request.getContent());
     }
 }

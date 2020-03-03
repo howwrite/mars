@@ -1,6 +1,6 @@
-package com.github.howwrite.mars.sdk.config.config;
+package com.github.howwrite.mars.sdk.config;
 
-import com.github.howwrite.mars.sdk.advice.MarsMessageConverter;
+import com.github.howwrite.mars.sdk.converter.MarsMessageConverter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -20,6 +20,6 @@ public class MarsConfiguration implements WebMvcConfigurer {
 
     @Override
     public void extendMessageConverters(List<HttpMessageConverter<?>> converters) {
-        converters.add(marsMessageConverter);
+        converters.add(0, marsMessageConverter);
     }
 }
