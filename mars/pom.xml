@@ -14,10 +14,13 @@
         <java.version>1.8</java.version>
     </properties>
     <dependencies>
+        <!-- 由于高版本解码时会出现异常，所以强依赖1.9版本 -->
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
+            <version>1.9</version>
         </dependency>
+
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
