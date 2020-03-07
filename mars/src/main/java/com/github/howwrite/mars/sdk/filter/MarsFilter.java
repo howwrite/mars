@@ -3,17 +3,14 @@ package com.github.howwrite.mars.sdk.filter;
 import com.github.howwrite.mars.sdk.constants.MarsConstants;
 import com.github.howwrite.mars.sdk.exception.MarsErrorCode;
 import com.github.howwrite.mars.sdk.exception.MarsWxException;
-import com.github.howwrite.mars.sdk.extension.MarsParameterServletRequest;
 import com.github.howwrite.mars.sdk.utils.WxUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.util.StringUtils;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.Map;
 
 /**
  * @author howwrite
@@ -30,7 +27,7 @@ public class MarsFilter implements Filter {
     }
 
     /**
-     * 对于 get 请求，计算出返回的
+     * 对于 get 请求，计算出校验码直接返回
      *
      * @param request
      * @param response
@@ -46,31 +43,8 @@ public class MarsFilter implements Filter {
             checkSignature(req, resp);
             return;
         }
-        if (req.getMethod().equals(MarsConstants.MARS_WX_HANDLE_MESSAGE_METHOD)) {
-            HttpServletRequest marsRequest = parsingTheMessage(req, resp);
-            chain.doFilter(marsRequest, resp);
-            return;
-        }
-        throw new MarsWxException(MarsErrorCode.UNABLE_TO_PROCESS_THIS_REQUEST);
+        chain.doFilter(req, resp);
     }
-
-    private HttpServletRequest parsingTheMessage(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        String signature = request.getParameter(MarsConstants.MARS_WX_SIGNATURE_PARAM_NAME);
-        String echostr = request.getParameter(MarsConstants.MARS_WX_ECHOSTR_PARAM_NAME);
-        String timestamp = request.getParameter(MarsConstants.MARS_WX_TIMESTAMP_PARAM_NAME);
-        String nonce = request.getParameter(MarsConstants.MARS_WX_NONCE_PARAM_NAME);
-        log.debug("decrypt message.signature:{}, echostr:{}, timestamp:{}, nonce:{}", signature, echostr, timestamp, nonce);
-
-        ServletInputStream inputStream = request.getInputStream();
-        Map<String, String> map = wxUtils.parseXml(inputStream, signature, timestamp, nonce);
-
-        MarsParameterServletRequest marsParameterServletRequest = new MarsParameterServletRequest(request);
-        map.forEach((key, value) -> {
-            marsParameterServletRequest.putParameter(StringUtils.uncapitalize(key), value);
-        });
-        return marsParameterServletRequest;
-    }
-
 
     /**
      * 验证签名

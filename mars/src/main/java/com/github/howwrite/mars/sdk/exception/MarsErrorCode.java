@@ -31,4 +31,9 @@ public interface MarsErrorCode {
      * 无法处理此请求
      */
     String UNABLE_TO_PROCESS_THIS_REQUEST = "unable.to.process.this.request";
+
+    /**
+     * 暂时未支持该类型的请求
+     */
+    String NOT_CURRENTLY_SUPPORTED_TYPE = "not.currently.supported.type";
 }

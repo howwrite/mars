@@ -1,10 +1,10 @@
 package com.github.howwrite.mars.sdk.response;
 
 /**
- * @author zhu.senlin
+ * @author howwrite
  * @date 2020/3/3 上午8:19:02
  */
-public class BaseMarsTextWxResponse extends BaseMarsWxResponse {
+public class MarsTextResponse extends BaseMarsResponse {
     private String content;
 
     public String getContent() {

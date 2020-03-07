@@ -1,7 +1,7 @@
 package com.github.howwrite.mars.sdk.response;
 
 import com.github.howwrite.mars.sdk.constants.WxMsgType;
-import com.github.howwrite.mars.sdk.request.MarsWxRequest;
+import com.github.howwrite.mars.sdk.request.BaseMarsRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,8 +11,8 @@ import org.slf4j.LoggerFactory;
  * @author howwrite
  * @date 2020/3/1 下午2:31:40
  */
-public abstract class BaseMarsWxResponse {
-    private static final Logger log = LoggerFactory.getLogger(BaseMarsWxResponse.class);
+public abstract class BaseMarsResponse {
+    private static final Logger log = LoggerFactory.getLogger(BaseMarsResponse.class);
     /**
      * 开发者微信号
      */
@@ -33,12 +33,12 @@ public abstract class BaseMarsWxResponse {
      */
     private Boolean encryption;
 
-    public static BaseMarsWxResponse createTextResponse(MarsWxRequest request, String content) {
+    public static BaseMarsResponse createTextResponse(BaseMarsRequest request, String content) {
         return createTextResponse(request, content, request.getFromUserName());
     }
 
-    public static BaseMarsWxResponse createTextResponse(MarsWxRequest request, String content, String toUserName) {
-        BaseMarsTextWxResponse response = new BaseMarsTextWxResponse();
+    public static BaseMarsResponse createTextResponse(BaseMarsRequest request, String content, String toUserName) {
+        MarsTextResponse response = new MarsTextResponse();
         createResponse(request, response, toUserName, WxMsgType.TEXT_TYPE);
         response.setContent(content);
         response.setToUserName(toUserName);
@@ -46,18 +46,18 @@ public abstract class BaseMarsWxResponse {
         return response;
     }
 
-    public static BaseMarsWxResponse createImageResponse(MarsWxRequest request, String mediaId) {
+    public static BaseMarsResponse createImageResponse(BaseMarsRequest request, String mediaId) {
         return createImageResponse(request, mediaId, request.getFromUserName());
     }
 
-    public static BaseMarsWxResponse createImageResponse(MarsWxRequest request, String mediaId, String toUserName) {
-        BaseMarsImageWxResponse response = new BaseMarsImageWxResponse();
+    public static BaseMarsResponse createImageResponse(BaseMarsRequest request, String mediaId, String toUserName) {
+        MarsImageResponse response = new MarsImageResponse();
         createResponse(request, response, toUserName, WxMsgType.IMAGE_TYPE);
         response.setMediaId(mediaId);
         return response;
     }
 
-    private static void createResponse(MarsWxRequest request, BaseMarsWxResponse response, String toUserName, String msgType) {
+    private static void createResponse(BaseMarsRequest request, BaseMarsResponse response, String toUserName, String msgType) {
         response.setFromUserName(request.getToUserName());
         response.setEncryption(request.getEncryption());
         response.setToUserName(toUserName);

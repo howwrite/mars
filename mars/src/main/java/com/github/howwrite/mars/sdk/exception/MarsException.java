@@ -2,7 +2,7 @@ package com.github.howwrite.mars.sdk.exception;
 
 /**
  * @author howwrite
- * @Description
+ * @Description mars的异常类
  * @create 2019/12/15 21:09
  */
 public class MarsException extends RuntimeException {
@@ -21,6 +21,7 @@ public class MarsException extends RuntimeException {
     public MarsException(String code) {
         super(code);
         this.code = code;
+        this.message = code;
     }
 
     public MarsException(String code, Throwable throwable) {

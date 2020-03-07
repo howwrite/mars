@@ -1,0 +1,6 @@
+mars:
+  path: /testMars
+  weixin:
+    token: testToken
+    app-id: testAppId
+    encoding-aes-key: abcdefghijabcdefghijabcdefghijabcdefghijabc

@@ -5,7 +5,7 @@
     <parent>
         <artifactId>mars-project</artifactId>
         <groupId>com.github.howwrite</groupId>
-        <version>1.0.RELEASE</version>
+        <version>1.1.RELEASE</version>
     </parent>
     <artifactId>mars-demo</artifactId>
     <name>mars-demo</name>
@@ -19,11 +19,16 @@
         </dependency>
 
         <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <optional>true</optional>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>
         </dependency>
 
+        <dependency>
+            <groupId>com.squareup.okhttp3</groupId>
+            <artifactId>okhttp</artifactId>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>com.github.howwrite</groupId>
             <artifactId>mars</artifactId>

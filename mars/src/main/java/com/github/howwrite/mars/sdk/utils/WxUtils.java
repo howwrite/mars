@@ -30,7 +30,8 @@ import java.util.Map;
  */
 @Component
 public class WxUtils {
-    private static final Logger log = LoggerFactory.getLogger(WxUtils.class);
+    private static final
+    Logger log = LoggerFactory.getLogger(WxUtils.class);
     private final WxBizMsgCrypt wxBizMsgCrypt;
     private MarsWxProperties marsWxProperties;
 
@@ -62,7 +63,7 @@ public class WxUtils {
         }
     }
 
-    public Map<String, String> parseXml(InputStream inputStream, String signature, String timeStamp, String nonce) throws MarsWxException {
+    public Map<String, Object> parseXml(InputStream inputStream, String signature, String timeStamp, String nonce) throws MarsWxException {
         String msg = streamToString(inputStream);
         return parseXml(msg, signature, timeStamp, nonce);
     }
@@ -71,8 +72,8 @@ public class WxUtils {
      * @param input:微信传来的消息请求
      * @return 处理后的微信消息bean
      */
-    public Map<String, String> parseXml(String input, String signature, String timeStamp, String nonce) throws MarsWxException {
-        Map<String, String> map = new HashMap<String, String>(10);
+    public Map<String, Object> parseXml(String input, String signature, String timeStamp, String nonce) throws MarsWxException {
+        Map<String, Object> map = new HashMap<String, Object>(16);
         if (StringUtils.isEmpty(input)) {
             return new HashMap<>(16);
         }
@@ -85,7 +86,7 @@ public class WxUtils {
         }
         Element rootElement = document.getRootElement();
         String encrypt = rootElement.elementText("Encrypt");
-        if (encrypt != null) {
+        if (!StringUtils.isEmpty(encrypt)) {
             try {
                 input = wxBizMsgCrypt.decryptMsg(signature, timeStamp, nonce, encrypt);
                 rootElement = DocumentHelper.parseText(input).getRootElement();
@@ -93,10 +94,10 @@ public class WxUtils {
                 log.warn("parse encrypt xml fail:", e);
                 throw new MarsWxException(MarsErrorCode.PARSE_XML_FAIL);
             }
-            map.put("encryption", "true");
+            map.put("Encryption", true);
             log.debug("Encryption mode");
         } else {
-            map.put("encryption", "false");
+            map.put("Encryption", false);
         }
         List<Element> elements = rootElement.elements();
         for (Element element : elements) {

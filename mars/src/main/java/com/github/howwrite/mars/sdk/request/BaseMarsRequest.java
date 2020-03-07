@@ -6,7 +6,7 @@ package com.github.howwrite.mars.sdk.request;
  * @author howwrite
  * @date 2020/1/1 下午10:32:26
  */
-public class MarsWxRequest {
+public abstract class BaseMarsRequest {
     /**
      * 开发者微信号
      */
@@ -20,7 +20,7 @@ public class MarsWxRequest {
     /**
      * 消息创建时间
      */
-    private Long createTime;
+    private String createTime;
 
     /**
      * 消息类型
@@ -28,14 +28,22 @@ public class MarsWxRequest {
     private String msgType;
 
     /**
-     * 文本消息内容
+     * 消息id
      */
-    private String content;
+    private String msgId;
 
     /**
      * 是否为加密消息
      */
     private Boolean encryption;
+
+    public String getMsgId() {
+        return msgId;
+    }
+
+    public void setMsgId(String msgId) {
+        this.msgId = msgId;
+    }
 
     public Boolean getEncryption() {
         return encryption;
@@ -61,11 +69,11 @@ public class MarsWxRequest {
         this.fromUserName = fromUserName;
     }
 
-    public Long getCreateTime() {
+    public String getCreateTime() {
         return createTime;
     }
 
-    public void setCreateTime(Long createTime) {
+    public void setCreateTime(String createTime) {
         this.createTime = createTime;
     }
 
@@ -75,13 +83,5 @@ public class MarsWxRequest {
 
     public void setMsgType(String msgType) {
         this.msgType = msgType;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
     }
 }

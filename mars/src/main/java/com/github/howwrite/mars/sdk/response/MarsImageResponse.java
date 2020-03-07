@@ -1,10 +1,10 @@
 package com.github.howwrite.mars.sdk.response;
 
 /**
- * @author zhu.senlin
+ * @author howwrite
  * @date 2020/3/3 上午8:20:29
  */
-public class BaseMarsImageWxResponse extends BaseMarsWxResponse {
+public class MarsImageResponse extends BaseMarsResponse {
     private String mediaId;
 
     public String getMediaId() {

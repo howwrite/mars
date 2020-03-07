@@ -3,6 +3,8 @@ package com.github.howwrite.mars.sdk;
 import com.github.howwrite.mars.sdk.config.MarsProperties;
 import com.github.howwrite.mars.sdk.config.MarsWxProperties;
 import com.github.howwrite.mars.sdk.filter.MarsFilter;
+import com.github.howwrite.mars.sdk.support.MarsResolver;
+import com.github.howwrite.mars.sdk.support.MarsReturnValueHandler;
 import com.github.howwrite.mars.sdk.utils.WxUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -12,8 +14,13 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.support.AbstractResourceBasedMessageSource;
 import org.springframework.util.ObjectUtils;
+import org.springframework.web.method.support.HandlerMethodArgumentResolver;
+import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 import javax.annotation.PostConstruct;
+import javax.annotation.Resource;
+import java.util.List;
 
 /**
  * @author howwrite
@@ -23,10 +30,23 @@ import javax.annotation.PostConstruct;
 @Configuration
 @ComponentScan
 @EnableConfigurationProperties({MarsProperties.class, MarsWxProperties.class})
-public class MarsStarterAutoConfiguration {
+public class MarsStarterAutoConfiguration implements WebMvcConfigurer {
 
     @Autowired(required = false)
     private AbstractResourceBasedMessageSource abstractResourceBasedMessageSource;
+
+    @Resource
+    private WxUtils wxUtils;
+
+    @Override
+    public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
+        resolvers.add(new MarsResolver(wxUtils));
+    }
+
+    @Override
+    public void addReturnValueHandlers(List<HandlerMethodReturnValueHandler> handlers) {
+        handlers.add(new MarsReturnValueHandler(wxUtils));
+    }
 
     @PostConstruct
     public void registerMessageSource() {

@@ -12,7 +12,7 @@
     <groupId>com.github.howwrite</groupId>
     <artifactId>mars-project</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.RELEASE</version>
+    <version>1.1.RELEASE</version>
     <modules>
         <module>mars-demo</module>
         <module>mars</module>
