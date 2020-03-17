@@ -4,10 +4,10 @@ import com.github.howwrite.mars.sdk.constants.WxMsgType;
 
 /**
  * @author howwrite
- * @date 2020/3/3 上午8:20:29
+ * @date 2020/3/7 下午10:48:12
  */
-public class MarsImageResponse extends BaseMarsResponse {
-    private static final long serialVersionUID = 3780289963468833618L;
+public class MarsVoiceResponse extends BaseMarsResponse {
+    private static final long serialVersionUID = 2117478574593998046L;
     private String mediaId;
 
     public String getMediaId() {
@@ -20,13 +20,13 @@ public class MarsImageResponse extends BaseMarsResponse {
 
     @Override
     public String getMsgType() {
-        return WxMsgType.IMAGE_TYPE;
+        return WxMsgType.VOICE_TYPE;
     }
 
     @Override
     public String convertXmlString(String createTime) {
         String parentXml = super.convertXmlString(createTime);
-        String format = "<xml>%s<Image><MediaId><![CDATA[%s]]></MediaId></Image></xml>";
+        String format = "<xml>%s<Voice><MediaId><![CDATA[%s]]></MediaId></Voice></xml>";
         return String.format(format, parentXml, mediaId);
     }
 }

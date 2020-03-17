@@ -3,7 +3,7 @@ package com.github.howwrite.mars.sdk.exception;
 /**
  * @author howwrite
  * @Description 错误码对应列表
- * @create 2019/12/15 21:11
+ * @date 2019/12/15 21:11
  */
 public interface MarsErrorCode {
     /**
@@ -36,4 +36,9 @@ public interface MarsErrorCode {
      * 暂时未支持该类型的请求
      */
     String NOT_CURRENTLY_SUPPORTED_TYPE = "not.currently.supported.type";
+
+    /**
+     * 未知的参数类型
+     */
+    String UNKNOWN_PARAMETER_TYPE = "unknown.parameter.type";
 }

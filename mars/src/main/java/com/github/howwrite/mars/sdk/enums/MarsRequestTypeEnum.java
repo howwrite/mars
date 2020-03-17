@@ -1,7 +1,7 @@
 package com.github.howwrite.mars.sdk.enums;
 
-import com.github.howwrite.mars.sdk.request.BaseMarsRequest;
-import com.github.howwrite.mars.sdk.request.MarsTextRequest;
+import com.github.howwrite.mars.sdk.request.*;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author howwrite
@@ -11,7 +11,36 @@ public enum MarsRequestTypeEnum {
     /**
      * 文本消息请求
      */
-    TEXT("text", MarsTextRequest.class);
+    TEXT("text", MarsTextRequest.class),
+    /**
+     * 图片类型请求
+     */
+    IMAGE("image", MarsImageRequest.class),
+    /**
+     * 语音类型请求
+     */
+    VOICE("voice", MarsVoiceRequest.class),
+    /**
+     * 视频类型请求
+     */
+    VIDEO("video", MarsVideoRequest.class),
+    /**
+     * 小视频类型请求
+     */
+    SHORT_VIDEO("shortvideo", MarsShortVideoRequest.class),
+    /**
+     * 链接类型请求
+     */
+    LINK("link", MarsLinkRequest.class),
+    /**
+     * 事件类型请求
+     */
+    EVENT("event", MarsEventRequest.class),
+    /**
+     * 上报地理位置事件请求
+     */
+    LOCATION("location", MarsLocationRequest.class),
+    ;
 
     /**
      * 请求类型
@@ -36,7 +65,7 @@ public enum MarsRequestTypeEnum {
     public static Class<? extends BaseMarsRequest> getRequestClazz(String type) {
         MarsRequestTypeEnum[] enums = values();
         for (MarsRequestTypeEnum anEnum : enums) {
-            if (anEnum.getSupportType().equals(type)) {
+            if (StringUtils.equalsIgnoreCase(anEnum.getSupportType(), type)) {
                 return anEnum.getClazz();
             }
         }

@@ -1,11 +1,16 @@
 package com.github.howwrite.mars.sdk.exception;
 
 /**
+ * 异常
+ * {@link MarsErrorCode}
+ *
  * @author howwrite
- * @Description mars的异常类
- * @create 2019/12/15 21:09
+ * @date 2019/12/29 下午8:53:50
  */
 public class MarsException extends RuntimeException {
+    private static final long serialVersionUID = -3016672510022120965L;
+
+
     private String message;
 
     private String code;

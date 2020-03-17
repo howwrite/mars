@@ -2,8 +2,12 @@ package com.github.howwrite.mars.sdk.response;
 
 import com.github.howwrite.mars.sdk.constants.WxMsgType;
 import com.github.howwrite.mars.sdk.request.BaseMarsRequest;
+import com.github.howwrite.mars.sdk.response.param.NewsResponseParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.io.Serializable;
+import java.util.List;
 
 /**
  * 消息基本类型
@@ -11,8 +15,9 @@ import org.slf4j.LoggerFactory;
  * @author howwrite
  * @date 2020/3/1 下午2:31:40
  */
-public abstract class BaseMarsResponse {
+public abstract class BaseMarsResponse implements Serializable {
     private static final Logger log = LoggerFactory.getLogger(BaseMarsResponse.class);
+    private static final long serialVersionUID = 7502062347511247255L;
     /**
      * 开发者微信号
      */
@@ -24,14 +29,59 @@ public abstract class BaseMarsResponse {
     private String fromUserName;
 
     /**
-     * 消息类型：{@link WxMsgType}
-     */
-    private String msgType;
-
-    /**
      * 消息是否加密
      */
     private Boolean encryption;
+
+    public static BaseMarsResponse createNewsResponse(BaseMarsRequest request, List<NewsResponseParam> params) {
+        return createNewsResponse(request, params, request.getFromUserName());
+    }
+
+    public static BaseMarsResponse createNewsResponse(BaseMarsRequest request, List<NewsResponseParam> articles, String toUserName) {
+        MarsNewsResponse response = new MarsNewsResponse();
+        createResponse(request, response, toUserName);
+        response.setArticles(articles);
+        return response;
+    }
+
+    public static BaseMarsResponse createMusicResponse(BaseMarsRequest request, String title, String description, String musicUrl, String hqMusicUrl, String thumbMediaId) {
+        return createMusicResponse(request, title, description, musicUrl, hqMusicUrl, thumbMediaId, request.getFromUserName());
+    }
+
+    public static BaseMarsResponse createMusicResponse(BaseMarsRequest request, String title, String description, String musicUrl, String hqMusicUrl, String thumbMediaId, String toUserName) {
+        MarsMusicResponse response = new MarsMusicResponse();
+        createResponse(request, response, toUserName);
+        response.setTitle(title);
+        response.setDescription(description);
+        response.setHqMusicUrl(hqMusicUrl);
+        response.setMusicUrl(musicUrl);
+        response.setThumbMediaId(thumbMediaId);
+        return response;
+    }
+
+    public static BaseMarsResponse createVideoResponse(BaseMarsRequest request, String mediaId, String title, String description) {
+        return createVideoResponse(request, mediaId, title, description, request.getFromUserName());
+    }
+
+    public static BaseMarsResponse createVideoResponse(BaseMarsRequest request, String mediaId, String title, String description, String toUserName) {
+        MarsVideoResponse response = new MarsVideoResponse();
+        createResponse(request, response, toUserName);
+        response.setMediaId(mediaId);
+        response.setTitle(title);
+        response.setDescription(description);
+        return response;
+    }
+
+    public static BaseMarsResponse createVoiceResponse(BaseMarsRequest request, String mediaId) {
+        return createVoiceResponse(request, mediaId, request.getFromUserName());
+    }
+
+    public static BaseMarsResponse createVoiceResponse(BaseMarsRequest request, String mediaId, String toUserName) {
+        MarsVoiceResponse response = new MarsVoiceResponse();
+        createResponse(request, response, toUserName);
+        response.setMediaId(mediaId);
+        return response;
+    }
 
     public static BaseMarsResponse createTextResponse(BaseMarsRequest request, String content) {
         return createTextResponse(request, content, request.getFromUserName());
@@ -39,10 +89,8 @@ public abstract class BaseMarsResponse {
 
     public static BaseMarsResponse createTextResponse(BaseMarsRequest request, String content, String toUserName) {
         MarsTextResponse response = new MarsTextResponse();
-        createResponse(request, response, toUserName, WxMsgType.TEXT_TYPE);
+        createResponse(request, response, toUserName);
         response.setContent(content);
-        response.setToUserName(toUserName);
-        response.setMsgType(WxMsgType.TEXT_TYPE);
         return response;
     }
 
@@ -52,16 +100,15 @@ public abstract class BaseMarsResponse {
 
     public static BaseMarsResponse createImageResponse(BaseMarsRequest request, String mediaId, String toUserName) {
         MarsImageResponse response = new MarsImageResponse();
-        createResponse(request, response, toUserName, WxMsgType.IMAGE_TYPE);
+        createResponse(request, response, toUserName);
         response.setMediaId(mediaId);
         return response;
     }
 
-    private static void createResponse(BaseMarsRequest request, BaseMarsResponse response, String toUserName, String msgType) {
+    private static void createResponse(BaseMarsRequest request, BaseMarsResponse response, String toUserName) {
         response.setFromUserName(request.getToUserName());
         response.setEncryption(request.getEncryption());
         response.setToUserName(toUserName);
-        response.setMsgType(msgType);
     }
 
     public Boolean getEncryption() {
@@ -88,13 +135,12 @@ public abstract class BaseMarsResponse {
         this.fromUserName = fromUserName;
     }
 
-    public String getMsgType() {
-        return msgType;
-    }
-
-    public void setMsgType(String msgType) {
-        this.msgType = msgType;
-    }
+    /**
+     * {@link WxMsgType}
+     *
+     * @return 回复的消息类型
+     */
+    public abstract String getMsgType();
 
     /**
      * 将此对象所有字段值类型为String且非空的值拼装成xml
@@ -107,6 +153,6 @@ public abstract class BaseMarsResponse {
                 "  <FromUserName><![CDATA[%s]]></FromUserName>\n" +
                 "  <CreateTime>%s</CreateTime>\n" +
                 "  <MsgType><![CDATA[%s]]></MsgType>";
-        return String.format(format, toUserName, fromUserName, createTime, msgType);
+        return String.format(format, toUserName, fromUserName, createTime, getMsgType());
     }
 }
