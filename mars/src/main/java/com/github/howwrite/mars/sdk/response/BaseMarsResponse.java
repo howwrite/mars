@@ -1,9 +1,16 @@
 package com.github.howwrite.mars.sdk.response;
 
 import com.github.howwrite.mars.sdk.constants.WxMsgType;
-import com.github.howwrite.mars.sdk.request.BaseMarsRequest;
+import com.github.howwrite.mars.sdk.exception.MarsErrorCode;
+import com.github.howwrite.mars.sdk.exception.MarsIllegalParamException;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.util.StringUtils;
+
+import java.io.Serializable;
 
 /**
  * 消息基本类型
@@ -11,8 +18,12 @@ import org.slf4j.LoggerFactory;
  * @author howwrite
  * @date 2020/3/1 下午2:31:40
  */
-public abstract class BaseMarsResponse {
+@Getter
+@Setter
+@ToString(callSuper = true)
+public abstract class BaseMarsResponse implements Serializable {
     private static final Logger log = LoggerFactory.getLogger(BaseMarsResponse.class);
+    private static final long serialVersionUID = 7502062347511247255L;
     /**
      * 开发者微信号
      */
@@ -24,77 +35,16 @@ public abstract class BaseMarsResponse {
     private String fromUserName;
 
     /**
-     * 消息类型：{@link WxMsgType}
-     */
-    private String msgType;
-
-    /**
      * 消息是否加密
      */
-    private Boolean encryption;
+    private Boolean encryption = false;
 
-    public static BaseMarsResponse createTextResponse(BaseMarsRequest request, String content) {
-        return createTextResponse(request, content, request.getFromUserName());
-    }
-
-    public static BaseMarsResponse createTextResponse(BaseMarsRequest request, String content, String toUserName) {
-        MarsTextResponse response = new MarsTextResponse();
-        createResponse(request, response, toUserName, WxMsgType.TEXT_TYPE);
-        response.setContent(content);
-        response.setToUserName(toUserName);
-        response.setMsgType(WxMsgType.TEXT_TYPE);
-        return response;
-    }
-
-    public static BaseMarsResponse createImageResponse(BaseMarsRequest request, String mediaId) {
-        return createImageResponse(request, mediaId, request.getFromUserName());
-    }
-
-    public static BaseMarsResponse createImageResponse(BaseMarsRequest request, String mediaId, String toUserName) {
-        MarsImageResponse response = new MarsImageResponse();
-        createResponse(request, response, toUserName, WxMsgType.IMAGE_TYPE);
-        response.setMediaId(mediaId);
-        return response;
-    }
-
-    private static void createResponse(BaseMarsRequest request, BaseMarsResponse response, String toUserName, String msgType) {
-        response.setFromUserName(request.getToUserName());
-        response.setEncryption(request.getEncryption());
-        response.setToUserName(toUserName);
-        response.setMsgType(msgType);
-    }
-
-    public Boolean getEncryption() {
-        return encryption;
-    }
-
-    public void setEncryption(Boolean encryption) {
-        this.encryption = encryption;
-    }
-
-    public String getToUserName() {
-        return toUserName;
-    }
-
-    public void setToUserName(String toUserName) {
-        this.toUserName = toUserName;
-    }
-
-    public String getFromUserName() {
-        return fromUserName;
-    }
-
-    public void setFromUserName(String fromUserName) {
-        this.fromUserName = fromUserName;
-    }
-
-    public String getMsgType() {
-        return msgType;
-    }
-
-    public void setMsgType(String msgType) {
-        this.msgType = msgType;
-    }
+    /**
+     * {@link WxMsgType}
+     *
+     * @return 回复的消息类型
+     */
+    public abstract String getMsgType();
 
     /**
      * 将此对象所有字段值类型为String且非空的值拼装成xml
@@ -107,6 +57,16 @@ public abstract class BaseMarsResponse {
                 "  <FromUserName><![CDATA[%s]]></FromUserName>\n" +
                 "  <CreateTime>%s</CreateTime>\n" +
                 "  <MsgType><![CDATA[%s]]></MsgType>";
-        return String.format(format, toUserName, fromUserName, createTime, msgType);
+        return String.format(format, getToUserName(), getFromUserName(), createTime, getMsgType());
+    }
+
+    public void checkParam() {
+        if (StringUtils.isEmpty(getToUserName())) {
+            throw new MarsIllegalParamException(MarsErrorCode.RESPONSE_TO_USER_NAME_CAN_NOT_BE_EMPTY);
+        }
+        if (StringUtils.isEmpty(getFromUserName())) {
+            throw new MarsIllegalParamException(MarsErrorCode.RESPONSE_FROM_USER_NAME_CAN_NOT_BE_EMPTY);
+        }
+
     }
 }

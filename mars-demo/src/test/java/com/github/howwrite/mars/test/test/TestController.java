@@ -49,7 +49,7 @@ public class TestController extends BaseMarsTest {
      */
     @Test
     public void testTextLaws() throws Exception {
-        String body = "<xml><ToUserName><![CDATA[testToUserName]]></ToUserName><FromUserName><![CDATA[testFromUserName]]></FromUserName><CreateTime>123456</CreateTime><MsgType><![CDATA[text]]></MsgType><Content><![CDATA[helloMars]]></Content><MsgId>1</MsgId></xml>";
+        String body = "<xml><ToUserName><![CDATA[testToUserName]]></ToUserName><FromUserName><![CDATA[testFromUserName]]></FromUserName><CreateTime>123456</CreateTime><MsgType><![CDATA[text]]></MsgType><Content><![CDATA[hello白羊座]]></Content><MsgId>1</MsgId></xml>";
         try (Response response = client.newCall(createTextLawsRequest(body, "")).execute()) {
             Assert.assertEquals(200, response.code());
             String result = response.body().string();
@@ -61,7 +61,7 @@ public class TestController extends BaseMarsTest {
             String fromUserName = rootElement.elementText("FromUserName");
             String msgType = rootElement.elementText("MsgType");
             // 发送内容是helloMars, 断言结果是: 用户发送内容+ too
-            Assert.assertEquals("helloMars too", content);
+            Assert.assertEquals("hello白羊座 too", content);
             Assert.assertEquals("testToUserName", fromUserName);
             Assert.assertEquals("testFromUserName", toUserName);
             Assert.assertEquals("text", msgType);

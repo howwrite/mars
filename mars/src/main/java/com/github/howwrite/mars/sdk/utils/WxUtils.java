@@ -2,7 +2,7 @@ package com.github.howwrite.mars.sdk.utils;
 
 import com.github.howwrite.mars.sdk.config.MarsWxProperties;
 import com.github.howwrite.mars.sdk.exception.MarsErrorCode;
-import com.github.howwrite.mars.sdk.exception.MarsWxException;
+import com.github.howwrite.mars.sdk.exception.MarsException;
 import com.github.howwrite.mars.sdk.utils.wx.aes.AesException;
 import com.github.howwrite.mars.sdk.utils.wx.aes.Sha1;
 import com.github.howwrite.mars.sdk.utils.wx.aes.WxBizMsgCrypt;
@@ -26,7 +26,7 @@ import java.util.Map;
 /**
  * @author howwrite
  * @Description 微信消息工具类，涉及消息加解密
- * @create 2019/12/15 21:50
+ * @date 2019/12/15 21:50
  */
 @Component
 public class WxUtils {
@@ -35,23 +35,23 @@ public class WxUtils {
     private final WxBizMsgCrypt wxBizMsgCrypt;
     private MarsWxProperties marsWxProperties;
 
-    public WxUtils(MarsWxProperties webWxProperties) throws MarsWxException {
+    public WxUtils(MarsWxProperties webWxProperties) throws MarsException {
         this.marsWxProperties = webWxProperties;
         try {
             wxBizMsgCrypt = new WxBizMsgCrypt(webWxProperties.getToken(), webWxProperties.getEncodingAesKey(), webWxProperties.getAppId());
         } catch (AesException e) {
             log.warn("create WxMpUtil fail", e);
-            throw new MarsWxException(MarsErrorCode.CREATE_WX_MSG_CRYPT_FAIL);
+            throw new MarsException(MarsErrorCode.CREATE_WX_MSG_CRYPT_FAIL);
         }
     }
 
     /**
      * 验证消息是否合法
      *
-     * @param timestamp
-     * @param nonce
-     * @param signature
-     * @return
+     * @param timestamp 时间戳
+     * @param nonce     nonce
+     * @param signature 签名
+     * @return 签名是否合法
      */
     public Boolean checkSignature(String timestamp, String nonce, String signature) {
         try {
@@ -59,11 +59,11 @@ public class WxUtils {
                     .equals(signature);
         } catch (Exception e) {
             log.warn("Checking signature failed, and the reason is :", e);
-            throw new MarsWxException(MarsErrorCode.CHECK_WX_SIGNATURE_FAIL);
+            throw new MarsException(MarsErrorCode.CHECK_WX_SIGNATURE_FAIL);
         }
     }
 
-    public Map<String, Object> parseXml(InputStream inputStream, String signature, String timeStamp, String nonce) throws MarsWxException {
+    public Map<String, String> parseXml(InputStream inputStream, String signature, String timeStamp, String nonce) throws MarsException {
         String msg = streamToString(inputStream);
         return parseXml(msg, signature, timeStamp, nonce);
     }
@@ -72,8 +72,8 @@ public class WxUtils {
      * @param input:微信传来的消息请求
      * @return 处理后的微信消息bean
      */
-    public Map<String, Object> parseXml(String input, String signature, String timeStamp, String nonce) throws MarsWxException {
-        Map<String, Object> map = new HashMap<String, Object>(16);
+    public Map<String, String> parseXml(String input, String signature, String timeStamp, String nonce) throws MarsException {
+        Map<String, String> map = new HashMap<>(16);
         if (StringUtils.isEmpty(input)) {
             return new HashMap<>(16);
         }
@@ -82,7 +82,7 @@ public class WxUtils {
             document = DocumentHelper.parseText(input);
         } catch (DocumentException e) {
             log.warn("parse xml fail", e);
-            throw new MarsWxException(MarsErrorCode.PARSE_XML_FAIL);
+            throw new MarsException(MarsErrorCode.PARSE_XML_FAIL);
         }
         Element rootElement = document.getRootElement();
         String encrypt = rootElement.elementText("Encrypt");
@@ -92,12 +92,12 @@ public class WxUtils {
                 rootElement = DocumentHelper.parseText(input).getRootElement();
             } catch (Exception e) {
                 log.warn("parse encrypt xml fail:", e);
-                throw new MarsWxException(MarsErrorCode.PARSE_XML_FAIL);
+                throw new MarsException(MarsErrorCode.PARSE_XML_FAIL);
             }
-            map.put("Encryption", true);
+            map.put("Encryption", "true");
             log.debug("Encryption mode");
         } else {
-            map.put("Encryption", false);
+            map.put("Encryption", "false");
         }
         List<Element> elements = rootElement.elements();
         for (Element element : elements) {
@@ -109,9 +109,8 @@ public class WxUtils {
     /**
      * inputStream转换为字符串的方法
      *
-     * @param inputStream
+     * @param inputStream 流内容
      * @return String类型结果
-     * @throws IOException
      */
     private String streamToString(InputStream inputStream) {
         log.debug("current stream convert string");
@@ -155,7 +154,7 @@ public class WxUtils {
             return wxBizMsgCrypt.encryptMsg(replyMsg, timeStamp, nonce);
         } catch (AesException e) {
             log.warn("encrypt error", e);
-            throw new MarsWxException(MarsErrorCode.ENCRYPT_FAIL, e);
+            throw new MarsException(MarsErrorCode.ENCRYPT_FAIL, e);
         }
     }
 }

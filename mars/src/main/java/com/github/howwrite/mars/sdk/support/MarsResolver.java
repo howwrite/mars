@@ -1,5 +1,6 @@
 package com.github.howwrite.mars.sdk.support;
 
+import com.github.howwrite.mars.sdk.annotation.MarsRequestAnnotation;
 import com.github.howwrite.mars.sdk.constants.MarsConstants;
 import com.github.howwrite.mars.sdk.enums.MarsRequestTypeEnum;
 import com.github.howwrite.mars.sdk.exception.MarsErrorCode;
@@ -9,6 +10,7 @@ import com.github.howwrite.mars.sdk.utils.WxUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.MethodParameter;
+import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.CollectionUtils;
@@ -18,10 +20,12 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+import javax.annotation.Nonnull;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
-import javax.validation.constraints.NotNull;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -47,7 +51,7 @@ public class MarsResolver implements HandlerMethodArgumentResolver {
     }
 
     @Override
-    public Object resolveArgument(@NotNull MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
+    public Object resolveArgument(@Nonnull MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
         HttpServletRequest request = webRequest.getNativeRequest(HttpServletRequest.class);
         Assert.notNull(request, "request get error");
         String signature = request.getParameter(MarsConstants.MARS_WX_SIGNATURE_PARAM_NAME);
@@ -57,8 +61,8 @@ public class MarsResolver implements HandlerMethodArgumentResolver {
         log.debug("decrypt message.signature:{}, echostr:{}, timestamp:{}, nonce:{}", signature, echostr, timestamp, nonce);
 
         ServletInputStream inputStream = request.getInputStream();
-        Map<String, Object> map = wxUtils.parseXml(inputStream, signature, timestamp, nonce);
-        String type = (String) map.get("MsgType");
+        Map<String, String> map = wxUtils.parseXml(inputStream, signature, timestamp, nonce);
+        String type = map.get(MarsConstants.MARS_WX_MSG_TYPE_NAME);
         Class<? extends BaseMarsRequest> requestClazz = MarsRequestTypeEnum.getRequestClazz(type);
         if (ObjectUtils.isEmpty(requestClazz)) {
             log.warn("This type of request is not currently supported,type:{}", type);
@@ -67,16 +71,51 @@ public class MarsResolver implements HandlerMethodArgumentResolver {
         BaseMarsRequest baseMarsRequest = requestClazz.newInstance();
         List<Method> methods = getAllSetMethod(baseMarsRequest.getClass());
         for (Method method : methods) {
-            if (!method.getName().startsWith("set")) {
-                continue;
-            }
-            String name = method.getName().substring(3);
-            Object value = map.get(name);
-            if (!ObjectUtils.isEmpty(value) && value.getClass().equals(method.getParameterTypes()[0])) {
-                method.invoke(baseMarsRequest, value);
+            String name = getParamName(method);
+            String value = map.get(name);
+            if (!ObjectUtils.isEmpty(value)) {
+                invoke(baseMarsRequest, method, value);
             }
         }
         return baseMarsRequest;
+    }
+
+    /**
+     * 根据参数类型将参数转化成对应类型的值
+     *
+     * @param request 构造的request对象
+     * @param method  相应的方法
+     * @param param   参数
+     * @throws InvocationTargetException 方法调用异常
+     * @throws IllegalAccessException    非法访问异常
+     */
+    private void invoke(BaseMarsRequest request, Method method, String param) throws InvocationTargetException, IllegalAccessException {
+        Class<?> parameterType = method.getParameterTypes()[0];
+        if (parameterType.equals(Boolean.class)) {
+            method.invoke(request, Boolean.valueOf(param));
+        } else if (parameterType.equals(String.class)) {
+            method.invoke(request, param);
+        } else if (parameterType.equals(BigDecimal.class)) {
+            method.invoke(request, new BigDecimal(param));
+        } else if (parameterType.equals(Long.class)) {
+            method.invoke(request, Long.valueOf(param));
+        } else {
+            throw new MarsException(MarsErrorCode.UNKNOWN_PARAMETER_TYPE);
+        }
+    }
+
+    /**
+     * 获取set方法的值对应xml的参数名称
+     *
+     * @param method set方法
+     * @return 对应xml的参数名称
+     */
+    private String getParamName(Method method) {
+        MarsRequestAnnotation annotation = AnnotationUtils.getAnnotation(method, MarsRequestAnnotation.class);
+        if (!ObjectUtils.isEmpty(annotation)) {
+            return annotation.xmlName();
+        }
+        return method.getName().substring(3);
     }
 
     private List<Method> getAllSetMethod(Class<? extends BaseMarsRequest> clazz) {

@@ -2,7 +2,7 @@ package com.github.howwrite.mars.sdk.filter;
 
 import com.github.howwrite.mars.sdk.constants.MarsConstants;
 import com.github.howwrite.mars.sdk.exception.MarsErrorCode;
-import com.github.howwrite.mars.sdk.exception.MarsWxException;
+import com.github.howwrite.mars.sdk.exception.MarsException;
 import com.github.howwrite.mars.sdk.utils.WxUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +15,7 @@ import java.io.IOException;
 /**
  * @author howwrite
  * @Description 过滤微信相关请求，解析参数中加密的字段值
- * @create 2019/12/15 15:25
+ * @date 2019/12/15 15:25
  */
 public class MarsFilter implements Filter {
     private static final Logger log = LoggerFactory.getLogger(MarsFilter.class);
@@ -29,11 +29,11 @@ public class MarsFilter implements Filter {
     /**
      * 对于 get 请求，计算出校验码直接返回
      *
-     * @param request
-     * @param response
-     * @param chain
-     * @throws IOException
-     * @throws ServletException
+     * @param request  请求
+     * @param response 响应
+     * @param chain    过滤器链
+     * @throws IOException      io异常
+     * @throws ServletException 服务异常
      */
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
@@ -63,7 +63,7 @@ public class MarsFilter implements Filter {
             log.debug("verification success.echostr:{}", echostr);
             response.getWriter().println(echostr);
         } else {
-            throw new MarsWxException(MarsErrorCode.CHECK_WX_SIGNATURE_FAIL);
+            throw new MarsException(MarsErrorCode.CHECK_WX_SIGNATURE_FAIL);
         }
     }
 

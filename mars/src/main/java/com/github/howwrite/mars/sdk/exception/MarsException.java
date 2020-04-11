@@ -1,44 +1,20 @@
 package com.github.howwrite.mars.sdk.exception;
 
 /**
+ * 异常
+ * {@link MarsErrorCode}
+ *
  * @author howwrite
- * @Description mars的异常类
- * @create 2019/12/15 21:09
+ * @date 2019/12/29 下午8:53:50
  */
 public class MarsException extends RuntimeException {
-    private String message;
+    private static final long serialVersionUID = -3016672510022120965L;
 
-    private String code;
-
-    private Throwable throwable;
-
-    public MarsException(String code, String message) {
-        super(code);
-        this.code = code;
-        this.message = message;
-    }
-
-    public MarsException(String code) {
-        super(code);
-        this.code = code;
-        this.message = code;
+    public MarsException(String message) {
+        super(message);
     }
 
     public MarsException(String code, Throwable throwable) {
-        this.code = code;
-        this.throwable = throwable;
-    }
-
-    @Override
-    public String getMessage() {
-        return message;
-    }
-
-    public String getCode() {
-        return code;
-    }
-
-    public Throwable getThrowable() {
-        return throwable;
+        super(code, throwable);
     }
 }

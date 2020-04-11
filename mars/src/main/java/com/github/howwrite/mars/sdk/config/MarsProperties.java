@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
 /**
  * @author howwrite
  * @Description mars相关配置
- * @create 2019/12/15 16:13
+ * @date 2019/12/15 16:13
  */
 @ConfigurationProperties(prefix = "mars")
 public class MarsProperties {
@@ -17,7 +17,7 @@ public class MarsProperties {
     /**
      * 处理微信请求的路径
      */
-    private String path;
+    private String path = "/mars";
 
     public MarsWxProperties getMarsWxProperties() {
         return marsWxProperties;

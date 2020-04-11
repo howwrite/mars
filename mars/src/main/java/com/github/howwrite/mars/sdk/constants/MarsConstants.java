@@ -11,4 +11,6 @@ public class MarsConstants {
     public static final String MARS_WX_ECHOSTR_PARAM_NAME = "echostr";
     public static final String MARS_WX_TIMESTAMP_PARAM_NAME = "timestamp";
     public static final String MARS_WX_NONCE_PARAM_NAME = "nonce";
+
+    public static final String MARS_WX_MSG_TYPE_NAME = "MsgType";
 }

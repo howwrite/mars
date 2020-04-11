@@ -5,7 +5,7 @@
     <parent>
         <groupId>com.github.howwrite</groupId>
         <artifactId>mars-project</artifactId>
-        <version>1.1.RELEASE</version>
+        <version>1.3.RELEASE</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -14,10 +14,13 @@
         <java.version>1.8</java.version>
     </properties>
     <dependencies>
+        <!-- 由于高版本解码时会出现异常，所以强依赖1.9版本 -->
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
+            <version>1.9</version>
         </dependency>
+
         <dependency>
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-lang3</artifactId>
@@ -40,6 +43,16 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-configuration-processor</artifactId>
             <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-all</artifactId>
         </dependency>
     </dependencies>
 

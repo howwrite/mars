@@ -1,0 +1,8 @@
+mars:
+  path: /weixin
+  weixin:
+    app-id: ${WEIXIN_APP_ID:}
+    encoding-aes-key: ${WEIXIN_AES_KEY:}
+    token: ${WEIXIN_TOKEN:}
+server:
+  port: 80
