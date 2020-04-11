@@ -37,6 +37,7 @@ public class MarsReturnValueHandler implements HandlerMethodReturnValueHandler {
     public void handleReturnValue(@NotNull Object returnValue, MethodParameter returnType, ModelAndViewContainer mavContainer, NativeWebRequest webRequest) {
         HttpServletResponse response = webRequest.getNativeResponse(HttpServletResponse.class);
         BaseMarsResponse baseMarsResponse = (BaseMarsResponse) returnValue;
+        baseMarsResponse.checkParam();
         String createTime = String.valueOf(System.currentTimeMillis());
         String result = baseMarsResponse.convertXmlString(createTime);
         if (baseMarsResponse.getEncryption()) {

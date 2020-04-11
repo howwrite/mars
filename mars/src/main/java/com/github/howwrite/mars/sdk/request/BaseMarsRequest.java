@@ -1,5 +1,9 @@
 package com.github.howwrite.mars.sdk.request;
 
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+
 import java.io.Serializable;
 
 /**
@@ -8,6 +12,9 @@ import java.io.Serializable;
  * @author howwrite
  * @date 2020/1/1 下午10:32:26
  */
+@Getter
+@Setter
+@ToString(callSuper = true)
 public abstract class BaseMarsRequest implements Serializable {
     private static final long serialVersionUID = 9143636257235861628L;
     /**
@@ -39,52 +46,4 @@ public abstract class BaseMarsRequest implements Serializable {
      * 是否为加密消息
      */
     private Boolean encryption;
-
-    public Boolean getEncryption() {
-        return encryption;
-    }
-
-    public void setEncryption(Boolean encryption) {
-        this.encryption = encryption;
-    }
-
-    public String getToUserName() {
-        return toUserName;
-    }
-
-    public void setToUserName(String toUserName) {
-        this.toUserName = toUserName;
-    }
-
-    public String getFromUserName() {
-        return fromUserName;
-    }
-
-    public void setFromUserName(String fromUserName) {
-        this.fromUserName = fromUserName;
-    }
-
-    public String getMsgType() {
-        return msgType;
-    }
-
-    public void setMsgType(String msgType) {
-        this.msgType = msgType;
-    }
-
-    public Long getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Long createTime) {
-        this.createTime = createTime;
-    }
-
-    public Long getMsgId() {
-        return msgId;
-    }
-
-    public void setMsgId(Long msgId) {
-        this.msgId = msgId;
-    }
 }

@@ -1,22 +1,23 @@
 package com.github.howwrite.mars.sdk.response;
 
 import com.github.howwrite.mars.sdk.constants.WxMsgType;
+import com.github.howwrite.mars.sdk.exception.MarsErrorCode;
+import com.github.howwrite.mars.sdk.exception.MarsIllegalParamException;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import org.springframework.util.StringUtils;
 
 /**
  * @author howwrite
  * @date 2020/3/3 上午8:20:29
  */
+@Getter
+@Setter
+@ToString(callSuper = true)
 public class MarsImageResponse extends BaseMarsResponse {
     private static final long serialVersionUID = 3780289963468833618L;
     private String mediaId;
-
-    public String getMediaId() {
-        return mediaId;
-    }
-
-    public void setMediaId(String mediaId) {
-        this.mediaId = mediaId;
-    }
 
     @Override
     public String getMsgType() {
@@ -27,6 +28,14 @@ public class MarsImageResponse extends BaseMarsResponse {
     public String convertXmlString(String createTime) {
         String parentXml = super.convertXmlString(createTime);
         String format = "<xml>%s<Image><MediaId><![CDATA[%s]]></MediaId></Image></xml>";
-        return String.format(format, parentXml, mediaId);
+        return String.format(format, parentXml, getMediaId());
+    }
+
+    @Override
+    public void checkParam() {
+        super.checkParam();
+        if (StringUtils.isEmpty(getMediaId())) {
+            throw new MarsIllegalParamException(MarsErrorCode.RESPONSE_MEDIA_ID_CAN_NOT_BE_EMPTY);
+        }
     }
 }

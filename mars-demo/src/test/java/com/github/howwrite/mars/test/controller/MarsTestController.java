@@ -1,5 +1,6 @@
 package com.github.howwrite.mars.test.controller;
 
+import com.github.howwrite.mars.sdk.facade.MarsResponseFactory;
 import com.github.howwrite.mars.sdk.request.BaseMarsRequest;
 import com.github.howwrite.mars.sdk.request.MarsTextRequest;
 import com.github.howwrite.mars.sdk.response.BaseMarsResponse;
@@ -16,7 +17,7 @@ public class MarsTestController {
     @PostMapping("/testMars")
     public BaseMarsResponse handlerWxMessage(BaseMarsRequest request) {
         if (request instanceof MarsTextRequest) {
-            return BaseMarsResponse.createTextResponse(request, ((MarsTextRequest) request).getContent() + " too");
+            return MarsResponseFactory.createTextResponse(request, ((MarsTextRequest) request).getContent() + " too");
         }
         return null;
     }

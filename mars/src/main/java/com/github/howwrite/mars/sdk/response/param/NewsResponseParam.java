@@ -1,5 +1,12 @@
 package com.github.howwrite.mars.sdk.response.param;
 
+import com.github.howwrite.mars.sdk.exception.MarsErrorCode;
+import com.github.howwrite.mars.sdk.exception.MarsIllegalParamException;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import org.springframework.util.StringUtils;
+
 import java.io.Serializable;
 
 /**
@@ -8,6 +15,9 @@ import java.io.Serializable;
  * @author howwrite
  * @date 2020/3/15 下午10:03:10
  */
+@Getter
+@Setter
+@ToString(callSuper = true)
 public class NewsResponseParam implements Serializable {
     private static final long serialVersionUID = -4887654889668007647L;
     /**
@@ -35,43 +45,26 @@ public class NewsResponseParam implements Serializable {
         this.url = url;
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getPicUrl() {
-        return picUrl;
-    }
-
-    public void setPicUrl(String picUrl) {
-        this.picUrl = picUrl;
-    }
-
-    public String getUrl() {
-        return url;
-    }
-
-    public void setUrl(String url) {
-        this.url = url;
-    }
-
     public String convertXmlString() {
         return String.format("<item> <Title><![CDATA[%s]]></Title>\n" +
                 "<Description><![CDATA[%s]]></Description>\n" +
                 "<PicUrl><![CDATA[%s]]></PicUrl>\n" +
                 "<Url><![CDATA[%s]]></Url>" +
-                "</item>", title, description, picUrl, url);
+                "</item>", getTitle(), getDescription(), getPicUrl(), getUrl());
+    }
+
+    public void checkParam() {
+        if (StringUtils.isEmpty(getUrl())) {
+            throw new MarsIllegalParamException(MarsErrorCode.RESPONSE_URL_CAN_NOT_BE_EMPTY);
+        }
+        if (StringUtils.isEmpty(getTitle())) {
+            throw new MarsIllegalParamException(MarsErrorCode.RESPONSE_TITLE_CAN_NOT_BE_EMPTY);
+        }
+        if (StringUtils.isEmpty(getPicUrl())) {
+            throw new MarsIllegalParamException(MarsErrorCode.RESPONSE_PIC_URL_CAN_NOT_BE_EMPTY);
+        }
+        if (StringUtils.isEmpty(getDescription())) {
+            throw new MarsIllegalParamException(MarsErrorCode.RESPONSE_DESCRIPTION_CAN_NOT_BE_EMPTY);
+        }
     }
 }

@@ -1,11 +1,20 @@
 package com.github.howwrite.mars.sdk.response;
 
 import com.github.howwrite.mars.sdk.constants.WxMsgType;
+import com.github.howwrite.mars.sdk.exception.MarsErrorCode;
+import com.github.howwrite.mars.sdk.exception.MarsIllegalParamException;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import org.springframework.util.StringUtils;
 
 /**
  * @author howwrite
  * @date 2020/3/8 上午8:43:51
  */
+@Getter
+@Setter
+@ToString(callSuper = true)
 public class MarsMusicResponse extends BaseMarsResponse {
     private static final long serialVersionUID = -7434226028895186911L;
     /**
@@ -36,48 +45,30 @@ public class MarsMusicResponse extends BaseMarsResponse {
 
     @Override
     public String convertXmlString(String createTime) {
-        String parentXml = super.convertXmlString(createTime);
-        String format = "<xml>%s<Video><MediaId><![CDATA[%s]]></MediaId><Title><![CDATA[%s]]></Title><Description><![CDATA[%s]]></Description></Video></xml>";
-        return String.format(format, parentXml, musicUrl, title, description);
+        StringBuilder result = new StringBuilder("<xml>");
+        result.append(super.convertXmlString(createTime));
+        result.append("<Music><ThumbMediaId><![CDATA[").append(getThumbMediaId()).append("]]></ThumbMediaId>");
+        if (!StringUtils.isEmpty(getTitle())) {
+            result.append("<Title><![CDATA[").append(getTitle()).append("]]></Title>");
+        }
+        if (!StringUtils.isEmpty(getMusicUrl())) {
+            result.append("<MusicUrl><![CDATA[").append(getMusicUrl()).append("]]></MusicUrl>");
+        }
+        if (!StringUtils.isEmpty(getHqMusicUrl())) {
+            result.append("<HQMusicUrl><![CDATA[").append(getHqMusicUrl()).append("]]></HQMusicUrl>");
+        }
+        if (!StringUtils.isEmpty(getDescription())) {
+            result.append("<Description><![CDATA[").append(getDescription()).append("]]></Description>");
+        }
+        result.append("</Music></xml>");
+        return result.toString();
     }
 
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public String getMusicUrl() {
-        return musicUrl;
-    }
-
-    public void setMusicUrl(String musicUrl) {
-        this.musicUrl = musicUrl;
-    }
-
-    public String getHqMusicUrl() {
-        return hqMusicUrl;
-    }
-
-    public void setHqMusicUrl(String hqMusicUrl) {
-        this.hqMusicUrl = hqMusicUrl;
-    }
-
-    public String getThumbMediaId() {
-        return thumbMediaId;
-    }
-
-    public void setThumbMediaId(String thumbMediaId) {
-        this.thumbMediaId = thumbMediaId;
+    @Override
+    public void checkParam() {
+        super.checkParam();
+        if (StringUtils.isEmpty(getThumbMediaId())) {
+            throw new MarsIllegalParamException(MarsErrorCode.RESPONSE_THUMB_MEDIA_ID_CAN_NOT_BE_EMPTY);
+        }
     }
 }

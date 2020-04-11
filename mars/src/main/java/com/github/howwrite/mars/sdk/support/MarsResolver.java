@@ -62,7 +62,7 @@ public class MarsResolver implements HandlerMethodArgumentResolver {
 
         ServletInputStream inputStream = request.getInputStream();
         Map<String, String> map = wxUtils.parseXml(inputStream, signature, timestamp, nonce);
-        String type = map.get("MsgType");
+        String type = map.get(MarsConstants.MARS_WX_MSG_TYPE_NAME);
         Class<? extends BaseMarsRequest> requestClazz = MarsRequestTypeEnum.getRequestClazz(type);
         if (ObjectUtils.isEmpty(requestClazz)) {
             log.warn("This type of request is not currently supported,type:{}", type);
@@ -80,6 +80,15 @@ public class MarsResolver implements HandlerMethodArgumentResolver {
         return baseMarsRequest;
     }
 
+    /**
+     * 根据参数类型将参数转化成对应类型的值
+     *
+     * @param request 构造的request对象
+     * @param method  相应的方法
+     * @param param   参数
+     * @throws InvocationTargetException 方法调用异常
+     * @throws IllegalAccessException    非法访问异常
+     */
     private void invoke(BaseMarsRequest request, Method method, String param) throws InvocationTargetException, IllegalAccessException {
         Class<?> parameterType = method.getParameterTypes()[0];
         if (parameterType.equals(Boolean.class)) {

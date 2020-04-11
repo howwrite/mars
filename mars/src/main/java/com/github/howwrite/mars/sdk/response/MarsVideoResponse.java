@@ -1,11 +1,20 @@
 package com.github.howwrite.mars.sdk.response;
 
 import com.github.howwrite.mars.sdk.constants.WxMsgType;
+import com.github.howwrite.mars.sdk.exception.MarsErrorCode;
+import com.github.howwrite.mars.sdk.exception.MarsIllegalParamException;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
+import org.springframework.util.StringUtils;
 
 /**
  * @author howwrite
  * @date 2020/3/7 下午11:08:12
  */
+@Getter
+@Setter
+@ToString(callSuper = true)
 public class MarsVideoResponse extends BaseMarsResponse {
     private static final long serialVersionUID = -218545960930935619L;
     /**
@@ -29,31 +38,24 @@ public class MarsVideoResponse extends BaseMarsResponse {
     @Override
     public String convertXmlString(String createTime) {
         String parentXml = super.convertXmlString(createTime);
-        String format = "<xml>%s<Video><MediaId><![CDATA[%s]]></MediaId><Title><![CDATA[%s]]></Title><Description><![CDATA[%s]]></Description></Video></xml>";
-        return String.format(format, parentXml, mediaId, title, description);
+        StringBuilder result = new StringBuilder("<xml>");
+        result.append(parentXml);
+        result.append("<Video><MediaId><![CDATA[").append(getMediaId()).append("]]></MediaId>");
+        if (!StringUtils.isEmpty(getTitle())) {
+            result.append("<Title><![CDATA[").append(getTitle()).append("]]></Title>");
+        }
+        if (!StringUtils.isEmpty(getDescription())) {
+            result.append("<Description><![CDATA[").append(getDescription()).append("]]></Description>");
+        }
+        result.append("</Video></xml>");
+        return result.toString();
     }
 
-    public String getMediaId() {
-        return mediaId;
-    }
-
-    public void setMediaId(String mediaId) {
-        this.mediaId = mediaId;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
+    @Override
+    public void checkParam() {
+        super.checkParam();
+        if (StringUtils.isEmpty(getMediaId())) {
+            throw new MarsIllegalParamException(MarsErrorCode.RESPONSE_MEDIA_ID_CAN_NOT_BE_EMPTY);
+        }
     }
 }
