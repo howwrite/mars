@@ -46,6 +46,7 @@ public class MarsWxUtils {
      * 获取 AccessToken 先从缓存中获取，如果没有的话就从微信端获取
      *
      * @return AccessToken
+     * @see MarsWxProperties#getGetAccessTokenRetry()
      */
     @NotNull
     public AccessTokenInfo getAccessToken() {
@@ -70,12 +71,13 @@ public class MarsWxUtils {
      * 从微信端获取AccessToken
      *
      * @return AccessToken
+     * https://developers.weixin.qq.com/doc/offiaccount/Basic_Information/Get_access_token.html
      */
     @NotNull
     public AccessTokenInfo refreshAccessToken() {
         String appSecret = marsWxProperties.getAppSecret();
         ParamUtils.notBlank(appSecret, "place config AppSecret to 'mars.weixin.app-secret'");
-        Map<String, Object> queryAccessTokenParams = new HashMap<>();
+        Map<String, Object> queryAccessTokenParams = new HashMap<>(8);
         queryAccessTokenParams.put("grant_type", "client_credential");
         queryAccessTokenParams.put("appid", marsWxProperties.getAppId());
         queryAccessTokenParams.put("secret", appSecret);
@@ -83,7 +85,7 @@ public class MarsWxUtils {
             try {
                 String bodyString = response.body().string();
                 Map<String, Object> stringObjectMap = marsJsonHandler.parseMap(bodyString);
-                if (stringObjectMap.containsKey("access_token")) {
+                if (stringObjectMap.containsKey(MarsConstants.ACCESS_TOKEN_RESPONSE_TOKEN_KEY)) {
                     String accessToken = (String) stringObjectMap.get("access_token");
                     Integer expires = (Integer) stringObjectMap.get("expires_in");
                     return new AccessTokenInfo(accessToken, expires);
@@ -114,7 +116,7 @@ public class MarsWxUtils {
      * @return 资源详情
      */
     public TempResourceInfo getTempResource(String mediaId) {
-        Map<String, Object> queryMap = new HashMap<>();
+        Map<String, Object> queryMap = new HashMap<>(8);
         AccessTokenInfo accessTokenInfo = getAccessToken();
         if (!accessTokenInfo.getSuccess()) {
             return TempResourceInfo.fail(accessTokenInfo.getThrowable(), accessTokenInfo.getErrorMsg());
