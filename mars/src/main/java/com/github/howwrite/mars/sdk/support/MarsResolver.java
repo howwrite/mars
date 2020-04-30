@@ -3,7 +3,6 @@ package com.github.howwrite.mars.sdk.support;
 import com.github.howwrite.mars.sdk.annotation.MarsRequestAnnotation;
 import com.github.howwrite.mars.sdk.constants.MarsConstants;
 import com.github.howwrite.mars.sdk.enums.MarsRequestTypeEnum;
-import com.github.howwrite.mars.sdk.exception.MarsErrorCode;
 import com.github.howwrite.mars.sdk.exception.MarsException;
 import com.github.howwrite.mars.sdk.request.BaseMarsRequest;
 import com.github.howwrite.mars.sdk.utils.WxUtils;
@@ -65,8 +64,7 @@ public class MarsResolver implements HandlerMethodArgumentResolver {
         String type = map.get(MarsConstants.MARS_WX_MSG_TYPE_NAME);
         Class<? extends BaseMarsRequest> requestClazz = MarsRequestTypeEnum.getRequestClazz(type);
         if (ObjectUtils.isEmpty(requestClazz)) {
-            log.warn("This type of request is not currently supported,type:{}", type);
-            throw new MarsException(MarsErrorCode.UNABLE_TO_PROCESS_THIS_REQUEST);
+            throw new MarsException("Could not process this request,type:{0}", type);
         }
         BaseMarsRequest baseMarsRequest = requestClazz.newInstance();
         List<Method> methods = getAllSetMethod(baseMarsRequest.getClass());
@@ -100,7 +98,7 @@ public class MarsResolver implements HandlerMethodArgumentResolver {
         } else if (parameterType.equals(Long.class)) {
             method.invoke(request, Long.valueOf(param));
         } else {
-            throw new MarsException(MarsErrorCode.UNKNOWN_PARAMETER_TYPE);
+            throw new MarsException("Unknown parameter type, parameter type:{0}", parameterType);
         }
     }
 

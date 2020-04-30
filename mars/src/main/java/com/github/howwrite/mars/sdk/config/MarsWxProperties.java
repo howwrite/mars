@@ -1,5 +1,6 @@
 package com.github.howwrite.mars.sdk.config;
 
+import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
@@ -7,6 +8,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  * @Description 关于微信的配置
  * @create 2019/12/15 15:27
  */
+@Data
 @ConfigurationProperties(prefix = "mars.weixin")
 public class MarsWxProperties {
 
@@ -22,28 +24,13 @@ public class MarsWxProperties {
      * 消息加解密密钥
      */
     private String encodingAesKey;
+    /**
+     * 开发者密码
+     */
+    private String appSecret;
 
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
-    public String getAppId() {
-        return appId;
-    }
-
-    public void setAppId(String appId) {
-        this.appId = appId;
-    }
-
-    public String getEncodingAesKey() {
-        return encodingAesKey;
-    }
-
-    public void setEncodingAesKey(String encodingAesKey) {
-        this.encodingAesKey = encodingAesKey;
-    }
+    /**
+     * 获取AccessToken的重试次数
+     */
+    private Integer getAccessTokenRetry = 3;
 }

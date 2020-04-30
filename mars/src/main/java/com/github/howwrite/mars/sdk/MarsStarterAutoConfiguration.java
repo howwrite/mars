@@ -2,23 +2,24 @@ package com.github.howwrite.mars.sdk;
 
 import com.github.howwrite.mars.sdk.config.MarsProperties;
 import com.github.howwrite.mars.sdk.config.MarsWxProperties;
+import com.github.howwrite.mars.sdk.facade.AccessTokenCacheExtend;
+import com.github.howwrite.mars.sdk.facade.impl.cache.AccessTokenRedisCache;
 import com.github.howwrite.mars.sdk.filter.MarsFilter;
 import com.github.howwrite.mars.sdk.support.MarsResolver;
 import com.github.howwrite.mars.sdk.support.MarsReturnValueHandler;
 import com.github.howwrite.mars.sdk.utils.WxUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.support.AbstractResourceBasedMessageSource;
-import org.springframework.util.ObjectUtils;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import javax.annotation.PostConstruct;
 import javax.annotation.Resource;
 import java.util.List;
 
@@ -32,27 +33,17 @@ import java.util.List;
 @EnableConfigurationProperties({MarsProperties.class, MarsWxProperties.class})
 public class MarsStarterAutoConfiguration implements WebMvcConfigurer {
 
-    @Autowired(required = false)
-    private AbstractResourceBasedMessageSource abstractResourceBasedMessageSource;
-
     @Resource
     private WxUtils wxUtils;
 
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(new MarsResolver(wxUtils));
+        resolvers.add(0, new MarsResolver(wxUtils));
     }
 
     @Override
     public void addReturnValueHandlers(List<HandlerMethodReturnValueHandler> handlers) {
-        handlers.add(new MarsReturnValueHandler(wxUtils));
-    }
-
-    @PostConstruct
-    public void registerMessageSource() {
-        if (!ObjectUtils.isEmpty(abstractResourceBasedMessageSource)) {
-            abstractResourceBasedMessageSource.getBasenameSet().add("mars-messages");
-        }
+        handlers.add(0, new MarsReturnValueHandler(wxUtils));
     }
 
     @Bean
@@ -62,5 +53,12 @@ public class MarsStarterAutoConfiguration implements WebMvcConfigurer {
         filterRegistrationBean.addUrlPatterns(marsProperties.getPath());
         filterRegistrationBean.setOrder(-10);
         return filterRegistrationBean;
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(AccessTokenCacheExtend.class)
+    @ConditionalOnClass(name = "org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration")
+    public AccessTokenCacheExtend accessTokenRedisCache(StringRedisTemplate stringRedisTemplate) {
+        return new AccessTokenRedisCache(stringRedisTemplate);
     }
 }

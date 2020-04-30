@@ -31,8 +31,10 @@ public class MarsController {
 
     @Autowired(required = false)
     public void setMessageHandlers(List<MarsMessageHandler> messageHandlers) {
-        this.messageHandlers = messageHandlers;
-        OrderComparator.sort(messageHandlers);
+        if (!CollectionUtils.isEmpty(messageHandlers)) {
+            this.messageHandlers = messageHandlers;
+            OrderComparator.sort(messageHandlers);
+        }
     }
 
     @PostMapping(value = "${mars.path:/mars}")

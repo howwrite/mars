@@ -13,4 +13,21 @@ public class MarsConstants {
     public static final String MARS_WX_NONCE_PARAM_NAME = "nonce";
 
     public static final String MARS_WX_MSG_TYPE_NAME = "MsgType";
+
+    /**
+     * 获取accessToken的地址
+     */
+    public static final String GET_ACCESS_TOKEN_URL = "https://api.weixin.qq.com/cgi-bin/token";
+    /**
+     * 获取临时媒体资源的地址
+     */
+    public static final String GET_TEMP_MEDIA_RES_URL = "https://api.weixin.qq.com/cgi-bin/media/get";
+
+    public static final String GET_ACCESS_TOKEN_DEVELOP_URL = "https://developers.weixin.qq.com/doc/offiaccount/Basic_Information/Get_access_token.html";
+    public static final String GET_TEMP_RESOURCES_DEVELOP_URL = "https://developers.weixin.qq.com/doc/offiaccount/Asset_Management/Get_temporary_materials.html";
+
+    /**
+     * 获取临时资源错误的响应类型
+     */
+    public static final String TEMP_RESP_ERR_TYPE = "text";
 }

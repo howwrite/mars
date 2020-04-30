@@ -8,6 +8,7 @@
 
 package com.github.howwrite.mars.sdk.utils.wx.aes;
 
+import com.github.howwrite.mars.sdk.exception.MarsEncryptException;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.commons.lang3.StringUtils;
 
@@ -27,9 +28,8 @@ public class Sha1 {
      *
      * @param array 需要加密的token,timestamp,noce,encrypt
      * @return 安全签名
-     * @throws AesException
      */
-    public static String getSha1(String... array) throws AesException {
+    public static String getSha1(String... array) {
         try {
             StringBuffer sb = new StringBuffer();
             // 字符串排序
@@ -54,8 +54,7 @@ public class Sha1 {
             }
             return hexstr.toString();
         } catch (Exception e) {
-            e.printStackTrace();
-            throw new AesException(AesException.COMPUTE_SIGNATURE_ERROR);
+            throw new MarsEncryptException("Sha encryption failed to generate signature", e);
         }
     }
 

@@ -1,13 +1,11 @@
 package com.github.howwrite.mars.sdk.response;
 
 import com.github.howwrite.mars.sdk.constants.WxMsgType;
-import com.github.howwrite.mars.sdk.exception.MarsErrorCode;
-import com.github.howwrite.mars.sdk.exception.MarsIllegalParamException;
 import com.github.howwrite.mars.sdk.response.param.NewsResponseParam;
+import com.github.howwrite.mars.sdk.utils.ParamUtils;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.springframework.util.CollectionUtils;
 
 import java.util.List;
 
@@ -43,9 +41,7 @@ public class MarsNewsResponse extends BaseMarsResponse {
     @Override
     public void checkParam() {
         super.checkParam();
-        if (CollectionUtils.isEmpty(getArticles())) {
-            throw new MarsIllegalParamException(MarsErrorCode.RESPONSE_ARTICLE_LIST_CAN_NOT_BE_EMPTY);
-        }
+        ParamUtils.notEmpty(getArticles(), "The list of articles in the result cannot be empty");
         articles.forEach(NewsResponseParam::checkParam);
     }
 

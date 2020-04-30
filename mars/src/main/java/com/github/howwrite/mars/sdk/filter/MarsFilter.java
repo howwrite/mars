@@ -1,7 +1,6 @@
 package com.github.howwrite.mars.sdk.filter;
 
 import com.github.howwrite.mars.sdk.constants.MarsConstants;
-import com.github.howwrite.mars.sdk.exception.MarsErrorCode;
 import com.github.howwrite.mars.sdk.exception.MarsException;
 import com.github.howwrite.mars.sdk.utils.WxUtils;
 import org.slf4j.Logger;
@@ -63,7 +62,7 @@ public class MarsFilter implements Filter {
             log.debug("verification success.echostr:{}", echostr);
             response.getWriter().println(echostr);
         } else {
-            throw new MarsException(MarsErrorCode.CHECK_WX_SIGNATURE_FAIL);
+            throw new MarsException("Failed to verify WeChat signature");
         }
     }
 

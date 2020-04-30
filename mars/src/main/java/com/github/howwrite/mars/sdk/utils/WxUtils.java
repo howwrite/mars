@@ -1,11 +1,11 @@
 package com.github.howwrite.mars.sdk.utils;
 
 import com.github.howwrite.mars.sdk.config.MarsWxProperties;
-import com.github.howwrite.mars.sdk.exception.MarsErrorCode;
+import com.github.howwrite.mars.sdk.exception.MarsEncryptException;
 import com.github.howwrite.mars.sdk.exception.MarsException;
-import com.github.howwrite.mars.sdk.utils.wx.aes.AesException;
 import com.github.howwrite.mars.sdk.utils.wx.aes.Sha1;
 import com.github.howwrite.mars.sdk.utils.wx.aes.WxBizMsgCrypt;
+import com.google.common.io.CharStreams;
 import org.dom4j.Document;
 import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
@@ -15,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -33,16 +32,14 @@ public class WxUtils {
     private static final
     Logger log = LoggerFactory.getLogger(WxUtils.class);
     private final WxBizMsgCrypt wxBizMsgCrypt;
-    private MarsWxProperties marsWxProperties;
+    private final MarsWxProperties marsWxProperties;
 
-    public WxUtils(MarsWxProperties webWxProperties) throws MarsException {
-        this.marsWxProperties = webWxProperties;
-        try {
-            wxBizMsgCrypt = new WxBizMsgCrypt(webWxProperties.getToken(), webWxProperties.getEncodingAesKey(), webWxProperties.getAppId());
-        } catch (AesException e) {
-            log.warn("create WxMpUtil fail", e);
-            throw new MarsException(MarsErrorCode.CREATE_WX_MSG_CRYPT_FAIL);
-        }
+    public WxUtils(MarsWxProperties marsWxProperties) throws MarsException {
+        this.marsWxProperties = marsWxProperties;
+        ParamUtils.notBlank(marsWxProperties.getToken(), "Please configure the token provided by WeChat");
+        ParamUtils.notBlank(marsWxProperties.getAppId(), "Please configure the app_id provided by WeChat");
+        ParamUtils.notBlank(marsWxProperties.getEncodingAesKey(), "Please configure encoding Aes Key provided by WeChat");
+        wxBizMsgCrypt = new WxBizMsgCrypt(marsWxProperties.getToken(), marsWxProperties.getEncodingAesKey(), marsWxProperties.getAppId());
     }
 
     /**
@@ -58,8 +55,7 @@ public class WxUtils {
             return Sha1.gen(marsWxProperties.getToken(), timestamp, nonce)
                     .equals(signature);
         } catch (Exception e) {
-            log.warn("Checking signature failed, and the reason is :", e);
-            throw new MarsException(MarsErrorCode.CHECK_WX_SIGNATURE_FAIL);
+            throw new MarsEncryptException("Failed to verify WeChat signature", e);
         }
     }
 
@@ -81,8 +77,7 @@ public class WxUtils {
         try {
             document = DocumentHelper.parseText(input);
         } catch (DocumentException e) {
-            log.warn("parse xml fail", e);
-            throw new MarsException(MarsErrorCode.PARSE_XML_FAIL);
+            throw new MarsEncryptException("Failed to parse xml", e);
         }
         Element rootElement = document.getRootElement();
         String encrypt = rootElement.elementText("Encrypt");
@@ -91,8 +86,7 @@ public class WxUtils {
                 input = wxBizMsgCrypt.decryptMsg(signature, timeStamp, nonce, encrypt);
                 rootElement = DocumentHelper.parseText(input).getRootElement();
             } catch (Exception e) {
-                log.warn("parse encrypt xml fail:", e);
-                throw new MarsException(MarsErrorCode.PARSE_XML_FAIL);
+                throw new MarsEncryptException("xml parsing failed", e);
             }
             map.put("Encryption", "true");
             log.debug("Encryption mode");
@@ -113,19 +107,12 @@ public class WxUtils {
      * @return String类型结果
      */
     private String streamToString(InputStream inputStream) {
-        log.debug("current stream convert string");
-        StringBuilder sb = new StringBuilder();
-        String line;
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
-            while ((line = reader.readLine()) != null) {
-                sb.append(line);
-            }
+        InputStreamReader in = new InputStreamReader(inputStream);
+        try {
+            return CharStreams.toString(in);
         } catch (IOException e) {
-            log.warn("stream convert string fail", e);
+            throw new MarsEncryptException("Stream conversion string exception", e);
         }
-
-        log.debug("stream convert string result:[{}]", sb.toString());
-        return sb.toString();
     }
 
 
@@ -150,11 +137,6 @@ public class WxUtils {
      * @return 加密后的可以直接回复用户的密文，包括msg_signature, timestamp, nonce, encrypt的xml格式的字符串
      */
     public String encryptMsg(String replyMsg, String timeStamp, String nonce) {
-        try {
-            return wxBizMsgCrypt.encryptMsg(replyMsg, timeStamp, nonce);
-        } catch (AesException e) {
-            log.warn("encrypt error", e);
-            throw new MarsException(MarsErrorCode.ENCRYPT_FAIL, e);
-        }
+        return wxBizMsgCrypt.encryptMsg(replyMsg, timeStamp, nonce);
     }
 }

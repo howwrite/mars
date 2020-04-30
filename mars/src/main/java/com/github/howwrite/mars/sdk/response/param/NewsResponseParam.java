@@ -1,11 +1,9 @@
 package com.github.howwrite.mars.sdk.response.param;
 
-import com.github.howwrite.mars.sdk.exception.MarsErrorCode;
-import com.github.howwrite.mars.sdk.exception.MarsIllegalParamException;
+import com.github.howwrite.mars.sdk.utils.ParamUtils;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.springframework.util.StringUtils;
 
 import java.io.Serializable;
 
@@ -54,17 +52,9 @@ public class NewsResponseParam implements Serializable {
     }
 
     public void checkParam() {
-        if (StringUtils.isEmpty(getUrl())) {
-            throw new MarsIllegalParamException(MarsErrorCode.RESPONSE_URL_CAN_NOT_BE_EMPTY);
-        }
-        if (StringUtils.isEmpty(getTitle())) {
-            throw new MarsIllegalParamException(MarsErrorCode.RESPONSE_TITLE_CAN_NOT_BE_EMPTY);
-        }
-        if (StringUtils.isEmpty(getPicUrl())) {
-            throw new MarsIllegalParamException(MarsErrorCode.RESPONSE_PIC_URL_CAN_NOT_BE_EMPTY);
-        }
-        if (StringUtils.isEmpty(getDescription())) {
-            throw new MarsIllegalParamException(MarsErrorCode.RESPONSE_DESCRIPTION_CAN_NOT_BE_EMPTY);
-        }
+        ParamUtils.notBlank(getUrl(), "The url in the result cannot be empty");
+        ParamUtils.notBlank(getTitle(), "The title in the result cannot be empty");
+        ParamUtils.notBlank(getPicUrl(), "PicUrl in the result cannot be empty");
+        ParamUtils.notBlank(getDescription(), "The description in the result cannot be empty");
     }
 }

@@ -9,11 +9,11 @@ package com.github.howwrite.mars.sdk.exception;
 public class MarsIllegalParamException extends MarsException {
     private static final long serialVersionUID = 2381440927674495673L;
 
-    public MarsIllegalParamException(String code, Throwable throwable) {
-        super(code, throwable);
+    public MarsIllegalParamException(String messge, Throwable throwable) {
+        super(messge, throwable);
     }
 
-    public MarsIllegalParamException(String code) {
-        super(code);
+    public MarsIllegalParamException(String message) {
+        super(message);
     }
 }
