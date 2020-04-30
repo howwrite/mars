@@ -12,13 +12,14 @@
 配置一个spring boot风格的application.yml文件，把他放到资源目录中
 ```yaml
 mars:
-  path: /mars
+  path: /weixin
   weixin:
     app-id: ${WEIXIN_APP_ID:}
     encoding-aes-key: ${WEIXIN_AES_KEY:}
     token: ${WEIXIN_TOKEN:}
+    app-secret: ${WEIXIN_SECRET:}
 ```
-[配置说明](README/config.md)
+[配置说明](../README/config.md)
 
 # 编写Controller
 ```java

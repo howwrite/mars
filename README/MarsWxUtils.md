@@ -9,11 +9,12 @@
 
 + refreshAccessToken()
 该方法会从微信服务器获取AccessToken，文档地址: https://developers.weixin.qq.com/doc/offiaccount/Basic_Information/Get_access_token.html
+
 获取成功后会保存到缓存中。
 
 + AccessToken缓存
 mars将缓存AccessToken逻辑抽象为一个接口
-com.github.howwrite.mars.sdk.facade.AccessTokenCacheExtend
+`com.github.howwrite.mars.sdk.facade.AccessTokenCacheExtend`
 ```java
 public interface AccessTokenCacheExtend {
     /**
