@@ -6,7 +6,7 @@ mars是基于springboot的微信公众号快速开发框架。使用springboot�
 + [快速开始](README/QuickStart.md)
 + [配置说明](README/config.md)
 + [高级功能(建议使用)](README/integration-starter.md)
-+ [高级功能详情]
++ [高级功能详情](README/integration-detail.md)
 + [响应消息说明](README/MarsResponseFactory.md)
 + [微信操作工具类](README/MarsWxUtils.md)
 

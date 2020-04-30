@@ -30,4 +30,8 @@ public class MarsConstants {
      * 获取临时资源错误的响应类型
      */
     public static final String TEMP_RESP_ERR_TYPE = "text";
+    /**
+     * 获取AccessToken响应中的AccessToken的key
+     */
+    public static final String ACCESS_TOKEN_RESPONSE_TOKEN_KEY = "access_token";
 }
