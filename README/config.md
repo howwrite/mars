@@ -18,4 +18,3 @@ mars.weixin.app-id|微信公众号后台配置的appId|String|是
 mars.weixin.token|微信公众号后台配置的token|String|是
 mars.weixin.encoding-aes-key|微信公众号后台配置的encodingAesKey|String|是
 mars.weixin.app-secret|微信公众号后台的appSecret|String|是
-mars.weixin.get-access-token-retry|获取AccessToken失败重试次数，默认3次|Integer|否

@@ -133,3 +133,4 @@ public class MarsResponseFactory {
     public static BaseMarsResponse createImageResponse(BaseMarsRequest request, String mediaId, String toUserName);
 }
 ```
++ demo参考[mars-integration-demo项目](../mars-integration-demo/src/main)

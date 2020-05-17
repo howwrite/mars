@@ -41,4 +41,5 @@ public class OneHandler implements MarsMessageHandler {
 ```
 启动springboot的启动类。 至此，一个接收文字消息时回复『i am one』，接收语音消息回复『你好』的公众号已完成
 
++ [高级功能详情](integration-detail.md)
 demo参考[mars-integration-demo项目](../mars-integration-demo/src/main)
