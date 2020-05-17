@@ -5,6 +5,7 @@ import com.github.howwrite.mars.sdk.request.BaseMarsRequest;
 import com.github.howwrite.mars.sdk.response.BaseMarsResponse;
 import org.slf4j.LoggerFactory;
 
+import javax.validation.constraints.NotNull;
 import java.util.Map;
 
 /**
@@ -22,7 +23,7 @@ public interface MarsCurtain {
     }
 
     /**
-     * 处理异常是的方法
+     * 处理异常时的方法
      *
      * @param request   消息内容
      * @param throwable 异常信息
@@ -50,6 +51,7 @@ public interface MarsCurtain {
      * @param request 消息内容
      * @return 回复的消息
      */
+    @NotNull
     default BaseMarsResponse defaultHandler(BaseMarsRequest request) {
         return MarsResponseFactory.createTextResponse(request, "hello");
     }

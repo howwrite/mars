@@ -1,5 +1,6 @@
 package com.github.howwrite.mars.sdk.config;
 
+import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.context.properties.NestedConfigurationProperty;
 
@@ -8,6 +9,7 @@ import org.springframework.boot.context.properties.NestedConfigurationProperty;
  * @Description mars相关配置
  * @date 2019/12/15 16:13
  */
+@Data
 @ConfigurationProperties(prefix = "mars")
 public class MarsProperties {
 
@@ -17,7 +19,7 @@ public class MarsProperties {
     /**
      * 处理微信请求的路径
      */
-    private String path = "/mars";
+    private String path;
 
     public MarsWxProperties getMarsWxProperties() {
         return marsWxProperties;
@@ -25,13 +27,5 @@ public class MarsProperties {
 
     public void setMarsWxProperties(MarsWxProperties marsWxProperties) {
         this.marsWxProperties = marsWxProperties;
-    }
-
-    public String getPath() {
-        return path;
-    }
-
-    public void setPath(String path) {
-        this.path = path;
     }
 }

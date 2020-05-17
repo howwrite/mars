@@ -1,12 +1,11 @@
 package com.github.howwrite.mars.sdk.filter;
 
 import com.github.howwrite.mars.sdk.constants.MarsConstants;
-import com.github.howwrite.mars.sdk.exception.MarsErrorCode;
 import com.github.howwrite.mars.sdk.exception.MarsException;
 import com.github.howwrite.mars.sdk.utils.WxUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
+import javax.annotation.Resource;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,14 +16,12 @@ import java.io.IOException;
  * @Description 过滤微信相关请求，解析参数中加密的字段值
  * @date 2019/12/15 15:25
  */
+@Slf4j
 public class MarsFilter implements Filter {
-    private static final Logger log = LoggerFactory.getLogger(MarsFilter.class);
+    public static final int ORDER = 0;
 
-    private final WxUtils wxUtils;
-
-    public MarsFilter(WxUtils wxUtils) {
-        this.wxUtils = wxUtils;
-    }
+    @Resource
+    private WxUtils wxUtils;
 
     /**
      * 对于 get 请求，计算出校验码直接返回
@@ -63,7 +60,7 @@ public class MarsFilter implements Filter {
             log.debug("verification success.echostr:{}", echostr);
             response.getWriter().println(echostr);
         } else {
-            throw new MarsException(MarsErrorCode.CHECK_WX_SIGNATURE_FAIL);
+            throw new MarsException("Failed to verify WeChat signature");
         }
     }
 

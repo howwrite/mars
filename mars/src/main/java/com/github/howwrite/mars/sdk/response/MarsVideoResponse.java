@@ -1,8 +1,7 @@
 package com.github.howwrite.mars.sdk.response;
 
 import com.github.howwrite.mars.sdk.constants.WxMsgType;
-import com.github.howwrite.mars.sdk.exception.MarsErrorCode;
-import com.github.howwrite.mars.sdk.exception.MarsIllegalParamException;
+import com.github.howwrite.mars.sdk.utils.ParamUtils;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
@@ -54,8 +53,6 @@ public class MarsVideoResponse extends BaseMarsResponse {
     @Override
     public void checkParam() {
         super.checkParam();
-        if (StringUtils.isEmpty(getMediaId())) {
-            throw new MarsIllegalParamException(MarsErrorCode.RESPONSE_MEDIA_ID_CAN_NOT_BE_EMPTY);
-        }
+        ParamUtils.notBlank(getMediaId(), "The mediaId in the result cannot be empty");
     }
 }

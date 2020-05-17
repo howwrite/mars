@@ -1,12 +1,10 @@
 package com.github.howwrite.mars.sdk.response;
 
 import com.github.howwrite.mars.sdk.constants.WxMsgType;
-import com.github.howwrite.mars.sdk.exception.MarsErrorCode;
-import com.github.howwrite.mars.sdk.exception.MarsIllegalParamException;
+import com.github.howwrite.mars.sdk.utils.ParamUtils;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.springframework.util.StringUtils;
 
 /**
  * @author howwrite
@@ -34,8 +32,6 @@ public class MarsTextResponse extends BaseMarsResponse {
     @Override
     public void checkParam() {
         super.checkParam();
-        if (StringUtils.isEmpty(getContent())) {
-            throw new MarsIllegalParamException(MarsErrorCode.RESPONSE_CONTENT_CAN_NOT_BE_EMPTY);
-        }
+        ParamUtils.notBlank(getContent(), "The content in the result cannot be empty");
     }
 }

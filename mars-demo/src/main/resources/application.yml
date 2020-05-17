@@ -4,5 +4,7 @@ mars:
     app-id: ${WEIXIN_APP_ID:}
     encoding-aes-key: ${WEIXIN_AES_KEY:}
     token: ${WEIXIN_TOKEN:}
+    app-secret: ${WEIXIN_SECRET:}
+    get-access-token-retry: 3
 server:
   port: 80

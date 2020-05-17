@@ -11,6 +11,7 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
@@ -22,11 +23,9 @@ import java.io.PrintWriter;
  */
 public class MarsReturnValueHandler implements HandlerMethodReturnValueHandler {
     private static final Logger log = LoggerFactory.getLogger(MarsReturnValueHandler.class);
-    private final WxUtils wxUtils;
 
-    public MarsReturnValueHandler(WxUtils wxUtils) {
-        this.wxUtils = wxUtils;
-    }
+    @Resource
+    private WxUtils wxUtils;
 
     @Override
     public boolean supportsReturnType(MethodParameter returnType) {

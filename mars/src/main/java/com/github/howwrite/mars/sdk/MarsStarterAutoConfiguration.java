@@ -2,24 +2,27 @@ package com.github.howwrite.mars.sdk;
 
 import com.github.howwrite.mars.sdk.config.MarsProperties;
 import com.github.howwrite.mars.sdk.config.MarsWxProperties;
+import com.github.howwrite.mars.sdk.facade.MarsCacheExtend;
+import com.github.howwrite.mars.sdk.facade.MarsJsonHandler;
+import com.github.howwrite.mars.sdk.facade.MarsWxUtils;
+import com.github.howwrite.mars.sdk.facade.impl.cache.MarsCacheExtendImpl;
+import com.github.howwrite.mars.sdk.facade.impl.cache.MarsRedisCache;
+import com.github.howwrite.mars.sdk.facade.impl.json.FastJsonHandler;
+import com.github.howwrite.mars.sdk.facade.impl.json.JacksonJsonHandler;
 import com.github.howwrite.mars.sdk.filter.MarsFilter;
 import com.github.howwrite.mars.sdk.support.MarsResolver;
 import com.github.howwrite.mars.sdk.support.MarsReturnValueHandler;
-import com.github.howwrite.mars.sdk.utils.WxUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.github.howwrite.mars.sdk.utils.http.HttpUtils;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.support.AbstractResourceBasedMessageSource;
-import org.springframework.util.ObjectUtils;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import javax.annotation.PostConstruct;
-import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -28,39 +31,64 @@ import java.util.List;
  * @create 2019/12/15 15:38
  */
 @Configuration
-@ComponentScan
 @EnableConfigurationProperties({MarsProperties.class, MarsWxProperties.class})
 public class MarsStarterAutoConfiguration implements WebMvcConfigurer {
 
-    @Autowired(required = false)
-    private AbstractResourceBasedMessageSource abstractResourceBasedMessageSource;
-
-    @Resource
-    private WxUtils wxUtils;
-
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(new MarsResolver(wxUtils));
+        resolvers.add(0, new MarsResolver());
     }
 
     @Override
     public void addReturnValueHandlers(List<HandlerMethodReturnValueHandler> handlers) {
-        handlers.add(new MarsReturnValueHandler(wxUtils));
-    }
-
-    @PostConstruct
-    public void registerMessageSource() {
-        if (!ObjectUtils.isEmpty(abstractResourceBasedMessageSource)) {
-            abstractResourceBasedMessageSource.getBasenameSet().add("mars-messages");
-        }
+        handlers.add(0, new MarsReturnValueHandler());
     }
 
     @Bean
-    public FilterRegistrationBean<MarsFilter> aclAuthFilter(MarsProperties marsProperties, WxUtils wxUtils) {
+    public FilterRegistrationBean<MarsFilter> marsFilter(MarsProperties marsProperties) {
         FilterRegistrationBean<MarsFilter> filterRegistrationBean = new FilterRegistrationBean<>();
-        filterRegistrationBean.setFilter(new MarsFilter(wxUtils));
+        filterRegistrationBean.setFilter(new MarsFilter());
         filterRegistrationBean.addUrlPatterns(marsProperties.getPath());
-        filterRegistrationBean.setOrder(-10);
+        filterRegistrationBean.setOrder(MarsFilter.ORDER);
         return filterRegistrationBean;
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(MarsCacheExtend.class)
+    @ConditionalOnClass(name = "org.springframework.data.redis.core.RedisTemplate")
+    public MarsCacheExtend accessTokenRedisCache() {
+        return new MarsRedisCache();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(MarsCacheExtend.class)
+    public MarsCacheExtend accessTokenCacheExtendImpl() {
+        return new MarsCacheExtendImpl();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(MarsJsonHandler.class)
+    @ConditionalOnClass(name = "com.fasterxml.jackson.databind.ObjectMapper")
+    public MarsJsonHandler jacksonJsonHandler() {
+        return new JacksonJsonHandler();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean(MarsJsonHandler.class)
+    @ConditionalOnClass(name = "com.alibaba.fastjson.JSONObject")
+    public MarsJsonHandler fastJsonHandler() {
+        return new FastJsonHandler();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public MarsWxUtils marsWxUtils() {
+        return new MarsWxUtils();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
+    public HttpUtils httpUtils() {
+        return new HttpUtils();
     }
 }

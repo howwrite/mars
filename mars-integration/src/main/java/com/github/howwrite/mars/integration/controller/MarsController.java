@@ -32,7 +32,7 @@ public class MarsController {
     @Autowired(required = false)
     public void setMessageHandlers(List<MarsMessageHandler> messageHandlers) {
         this.messageHandlers = messageHandlers;
-        OrderComparator.sort(messageHandlers);
+        OrderComparator.sort(this.messageHandlers);
     }
 
     @PostMapping(value = "${mars.path:/mars}")

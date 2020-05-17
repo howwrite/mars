@@ -1,14 +1,11 @@
 package com.github.howwrite.mars.sdk.response;
 
 import com.github.howwrite.mars.sdk.constants.WxMsgType;
-import com.github.howwrite.mars.sdk.exception.MarsErrorCode;
-import com.github.howwrite.mars.sdk.exception.MarsIllegalParamException;
+import com.github.howwrite.mars.sdk.utils.ParamUtils;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.util.StringUtils;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serializable;
 
@@ -21,8 +18,8 @@ import java.io.Serializable;
 @Getter
 @Setter
 @ToString(callSuper = true)
+@Slf4j
 public abstract class BaseMarsResponse implements Serializable {
-    private static final Logger log = LoggerFactory.getLogger(BaseMarsResponse.class);
     private static final long serialVersionUID = 7502062347511247255L;
     /**
      * 开发者微信号
@@ -61,12 +58,7 @@ public abstract class BaseMarsResponse implements Serializable {
     }
 
     public void checkParam() {
-        if (StringUtils.isEmpty(getToUserName())) {
-            throw new MarsIllegalParamException(MarsErrorCode.RESPONSE_TO_USER_NAME_CAN_NOT_BE_EMPTY);
-        }
-        if (StringUtils.isEmpty(getFromUserName())) {
-            throw new MarsIllegalParamException(MarsErrorCode.RESPONSE_FROM_USER_NAME_CAN_NOT_BE_EMPTY);
-        }
-
+        ParamUtils.notBlank(getToUserName(), "ToUserName in response cannot be empty");
+        ParamUtils.notBlank(getFromUserName(), "FromUserName in response cannot be empty");
     }
 }
