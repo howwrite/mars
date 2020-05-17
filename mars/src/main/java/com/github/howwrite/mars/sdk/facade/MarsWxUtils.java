@@ -3,18 +3,18 @@ package com.github.howwrite.mars.sdk.facade;
 import com.github.howwrite.mars.sdk.config.MarsWxProperties;
 import com.github.howwrite.mars.sdk.constants.MarsConstants;
 import com.github.howwrite.mars.sdk.info.AccessTokenInfo;
+import com.github.howwrite.mars.sdk.info.CacheInfo;
 import com.github.howwrite.mars.sdk.info.TempResourceInfo;
 import com.github.howwrite.mars.sdk.utils.MarsStringUtils;
 import com.github.howwrite.mars.sdk.utils.ParamUtils;
 import com.github.howwrite.mars.sdk.utils.http.HttpUtils;
 import com.google.common.io.ByteStreams;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
+import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
 import java.io.IOException;
 import java.io.InputStream;
@@ -25,46 +25,45 @@ import java.util.Map;
 /**
  * 微信相关工具
  *
- * @author zhu.senlin
+ * @author howwrite
  * @date 2020/4/16 下午7:33:12
  */
 @Slf4j
-@Component
-@RequiredArgsConstructor
 public class MarsWxUtils {
-    private final HttpUtils httpUtils;
-    private final MarsWxProperties marsWxProperties;
-    private final MarsJsonHandler marsJsonHandler;
-    private List<AccessTokenCacheExtend> accessTokenCacheExtends;
+    @Resource
+    private HttpUtils httpUtils;
+    @Resource
+    private MarsWxProperties marsWxProperties;
+    /**
+     * json解析器接口，依赖jackSon
+     * {@link com.github.howwrite.mars.sdk.facade.impl.json.JacksonJsonHandler}
+     * 如果需要更换json框架，请参考 https://github.com/howwrite/mars/blob/develop/README/MarsJsonHandler.md
+     */
+    @Resource
+    private MarsJsonHandler marsJsonHandler;
+    private List<MarsCacheExtend> marsCacheExtends;
 
     @Autowired(required = false)
-    public void setAccessTokenCacheExtends(List<AccessTokenCacheExtend> accessTokenCacheExtends) {
-        this.accessTokenCacheExtends = accessTokenCacheExtends;
+    public void setMarsCacheExtends(List<MarsCacheExtend> marsCacheExtends) {
+        this.marsCacheExtends = marsCacheExtends;
     }
 
     /**
      * 获取 AccessToken 先从缓存中获取，如果没有的话就从微信端获取
      *
      * @return AccessToken
-     * @see MarsWxProperties#getGetAccessTokenRetry()
      */
     @NotNull
     public AccessTokenInfo getAccessToken() {
-        if (!CollectionUtils.isEmpty(accessTokenCacheExtends)) {
-            for (AccessTokenCacheExtend accessTokenCacheExtend : accessTokenCacheExtends) {
-                AccessTokenInfo accessToken = accessTokenCacheExtend.getAccessToken();
-                if (!ObjectUtils.isEmpty(accessToken)) {
-                    return accessToken;
+        if (!CollectionUtils.isEmpty(marsCacheExtends)) {
+            for (MarsCacheExtend marsCacheExtend : marsCacheExtends) {
+                CacheInfo cacheInfo = marsCacheExtend.getValue(MarsConstants.ACCESS_TOKEN_CACHE_KEY);
+                if (cacheInfo.getSuccess()) {
+                    return new AccessTokenInfo(cacheInfo.getValue().toString(), cacheInfo.getExpires());
                 }
             }
         }
-        int count = 0;
-        AccessTokenInfo tokenInfo;
-        do {
-            tokenInfo = refreshAccessToken();
-            count++;
-        } while (!tokenInfo.getSuccess() && count <= marsWxProperties.getGetAccessTokenRetry());
-        return tokenInfo;
+        return refreshAccessToken();
     }
 
     /**
@@ -100,9 +99,9 @@ public class MarsWxUtils {
             return AccessTokenInfo.fail(e, "request accessToken Error");
         });
         if (!ObjectUtils.isEmpty(accessTokenInfo) && accessTokenInfo.getSuccess()) {
-            if (!CollectionUtils.isEmpty(accessTokenCacheExtends)) {
-                for (AccessTokenCacheExtend accessTokenCacheExtend : accessTokenCacheExtends) {
-                    accessTokenCacheExtend.saveAccessToken(accessTokenInfo.getAccessToken(), accessTokenInfo.getExpires());
+            if (!CollectionUtils.isEmpty(marsCacheExtends)) {
+                for (MarsCacheExtend marsCacheExtend : marsCacheExtends) {
+                    marsCacheExtend.saveValue(MarsConstants.ACCESS_TOKEN_CACHE_KEY, accessTokenInfo.getAccessToken(), accessTokenInfo.getExpires());
                 }
             }
         }
@@ -125,7 +124,7 @@ public class MarsWxUtils {
         queryMap.put("media_id", mediaId);
         return httpUtils.get(MarsConstants.GET_TEMP_MEDIA_RES_URL, queryMap, response -> {
             try (InputStream inputStream = response.body().byteStream()) {
-                if (MarsConstants.TEMP_RESP_ERR_TYPE.equals(response.body().contentType().type())) {
+                if (!MarsConstants.TEMP_RESP_SUCCESS_TYPE.contains(response.body().contentType().type())) {
                     return TempResourceInfo.fail("request temp res error", response.body().string());
                 }
                 String contentDisposition = response.headers().get("Content-disposition");
@@ -133,7 +132,7 @@ public class MarsWxUtils {
                 byte[] bytes = ByteStreams.toByteArray(inputStream);
                 return new TempResourceInfo(filename, bytes);
             } catch (IOException e) {
-                return TempResourceInfo.fail(e, "input stream to byteArray error");
+                return TempResourceInfo.fail(e, "get temp resource io error");
             }
         }, e -> TempResourceInfo.fail(e, "client temp res error"));
     }

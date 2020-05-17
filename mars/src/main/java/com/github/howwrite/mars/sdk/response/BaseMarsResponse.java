@@ -5,8 +5,7 @@ import com.github.howwrite.mars.sdk.utils.ParamUtils;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.Serializable;
 
@@ -19,8 +18,8 @@ import java.io.Serializable;
 @Getter
 @Setter
 @ToString(callSuper = true)
+@Slf4j
 public abstract class BaseMarsResponse implements Serializable {
-    private static final Logger log = LoggerFactory.getLogger(BaseMarsResponse.class);
     private static final long serialVersionUID = 7502062347511247255L;
     /**
      * 开发者微信号

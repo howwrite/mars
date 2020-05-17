@@ -7,7 +7,7 @@ import lombok.EqualsAndHashCode;
 /**
  * 临时资源详情
  *
- * @author zhu.senlin
+ * @author howwrite
  * @date 2020/4/29 上午10:19:54
  */
 @EqualsAndHashCode(callSuper = true)

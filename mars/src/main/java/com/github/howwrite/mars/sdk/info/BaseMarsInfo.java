@@ -6,7 +6,7 @@ import lombok.Data;
 import java.io.Serializable;
 
 /**
- * @author zhu.senlin
+ * @author howwrite
  * @date 2020/4/28 下午3:32:39
  */
 @Data

@@ -3,10 +3,9 @@ package com.github.howwrite.mars.sdk.facade.impl.json;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.github.howwrite.mars.sdk.exception.MarsException;
+import com.github.howwrite.mars.sdk.exception.MarsJsonException;
 import com.github.howwrite.mars.sdk.facade.MarsJsonHandler;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -14,23 +13,13 @@ import java.util.Iterator;
 import java.util.Map;
 
 /**
- * @author zhu.senlin
+ * @author howwrite
  * @date 2020/4/27 上午2:46:12
  */
-@Component
 @Slf4j
 public class JacksonJsonHandler implements MarsJsonHandler {
 
     private static final ObjectMapper OBJECT_MAPPER = new ObjectMapper();
-
-    @Override
-    public <T> T parseObject(String str, Class<T> clazz) {
-        try {
-            return OBJECT_MAPPER.readValue(str, clazz);
-        } catch (JsonProcessingException e) {
-            throw new MarsException("JSON string parsing failed", e, str, clazz);
-        }
-    }
 
     @Override
     public Map<String, Object> parseMap(String string) {
@@ -43,13 +32,22 @@ public class JacksonJsonHandler implements MarsJsonHandler {
         }
     }
 
+    @Override
+    public String toJsonString(Object object) throws MarsJsonException {
+        try {
+            return OBJECT_MAPPER.writeValueAsString(object);
+        } catch (JsonProcessingException e) {
+            throw new MarsJsonException("jackson obj to string error,", e);
+        }
+    }
+
     private Map<String, Object> parseMap(JsonNode jsonNode) {
         if (jsonNode.isArray()) {
             log.warn("current not support array type,json:{}", jsonNode.toString());
             return Collections.emptyMap();
         }
         Iterator<Map.Entry<String, JsonNode>> fields = jsonNode.fields();
-        Map<String, Object> result = new HashMap<>();
+        Map<String, Object> result = new HashMap<>(16);
         while (fields.hasNext()) {
             Map.Entry<String, JsonNode> next = fields.next();
             String key = next.getKey();

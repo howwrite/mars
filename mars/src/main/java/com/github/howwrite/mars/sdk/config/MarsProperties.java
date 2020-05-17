@@ -19,7 +19,7 @@ public class MarsProperties {
     /**
      * 处理微信请求的路径
      */
-    private String path = "/mars";
+    private String path;
 
     public MarsWxProperties getMarsWxProperties() {
         return marsWxProperties;

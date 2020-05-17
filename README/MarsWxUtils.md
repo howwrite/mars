@@ -14,7 +14,7 @@
 
 + AccessToken缓存
 mars将缓存AccessToken逻辑抽象为一个接口
-`com.github.howwrite.mars.sdk.facade.AccessTokenCacheExtend`
+`com.github.howwrite.mars.sdk.facade.MarsCacheExtend`
 ```java
 public interface AccessTokenCacheExtend {
     /**

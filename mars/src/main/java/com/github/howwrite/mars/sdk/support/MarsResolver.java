@@ -20,6 +20,7 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Resource;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.InvocationTargetException;
@@ -37,12 +38,8 @@ import java.util.Map;
 public class MarsResolver implements HandlerMethodArgumentResolver {
     private static final Logger log = LoggerFactory.getLogger(MarsResolver.class);
     private static final Map<Class<? extends BaseMarsRequest>, List<Method>> CLASS_METHOD_MAP = new HashMap<>();
-    private final WxUtils wxUtils;
-
-
-    public MarsResolver(WxUtils wxUtils) {
-        this.wxUtils = wxUtils;
-    }
+    @Resource
+    private WxUtils wxUtils;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
@@ -97,6 +94,8 @@ public class MarsResolver implements HandlerMethodArgumentResolver {
             method.invoke(request, new BigDecimal(param));
         } else if (parameterType.equals(Long.class)) {
             method.invoke(request, Long.valueOf(param));
+        } else if (parameterType.equals(Integer.class)) {
+            method.invoke(request, Integer.valueOf(param));
         } else {
             throw new MarsException("Unknown parameter type, parameter type:{0}", parameterType);
         }

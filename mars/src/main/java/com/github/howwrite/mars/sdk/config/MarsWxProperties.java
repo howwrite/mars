@@ -28,9 +28,4 @@ public class MarsWxProperties {
      * 开发者密码
      */
     private String appSecret;
-
-    /**
-     * 获取AccessToken的重试次数
-     */
-    private Integer getAccessTokenRetry = 3;
 }

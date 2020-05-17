@@ -95,5 +95,4 @@ public interface MarsMessageHandler {
     default BaseMarsResponse doVoice(MarsVoiceRequest request) throws Throwable {
         return null;
     }
-
 }
