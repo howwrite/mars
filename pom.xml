@@ -29,6 +29,7 @@
         <dom4j.version>2.1.1</dom4j.version>
         <guava.version>28.1-jre</guava.version>
         <hutool.version>5.2.5</hutool.version>
+        <fastjson.version>1.2.68</fastjson.version>
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -71,6 +72,11 @@
                 <groupId>commons-codec</groupId>
                 <artifactId>commons-codec</artifactId>
                 <version>${commons-codec.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>${fastjson.version}</version>
             </dependency>
             <!-- 三方框架依赖end -->
 

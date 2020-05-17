@@ -7,6 +7,7 @@ import com.github.howwrite.mars.sdk.facade.MarsJsonHandler;
 import com.github.howwrite.mars.sdk.facade.MarsWxUtils;
 import com.github.howwrite.mars.sdk.facade.impl.cache.MarsCacheExtendImpl;
 import com.github.howwrite.mars.sdk.facade.impl.cache.MarsRedisCache;
+import com.github.howwrite.mars.sdk.facade.impl.json.FastJsonHandler;
 import com.github.howwrite.mars.sdk.facade.impl.json.JacksonJsonHandler;
 import com.github.howwrite.mars.sdk.filter.MarsFilter;
 import com.github.howwrite.mars.sdk.support.MarsResolver;
@@ -67,16 +68,26 @@ public class MarsStarterAutoConfiguration implements WebMvcConfigurer {
 
     @Bean
     @ConditionalOnMissingBean(MarsJsonHandler.class)
+    @ConditionalOnClass(name = "com.fasterxml.jackson.databind.ObjectMapper")
     public MarsJsonHandler jacksonJsonHandler() {
         return new JacksonJsonHandler();
     }
 
     @Bean
+    @ConditionalOnMissingBean(MarsJsonHandler.class)
+    @ConditionalOnClass(name = "com.alibaba.fastjson.JSONObject")
+    public MarsJsonHandler fastJsonHandler() {
+        return new FastJsonHandler();
+    }
+
+    @Bean
+    @ConditionalOnMissingBean
     public MarsWxUtils marsWxUtils() {
         return new MarsWxUtils();
     }
 
     @Bean
+    @ConditionalOnMissingBean
     public HttpUtils httpUtils() {
         return new HttpUtils();
     }
