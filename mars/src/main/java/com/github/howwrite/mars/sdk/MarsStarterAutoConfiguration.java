@@ -4,7 +4,6 @@ import com.github.howwrite.mars.sdk.config.MarsProperties;
 import com.github.howwrite.mars.sdk.config.MarsWxProperties;
 import com.github.howwrite.mars.sdk.facade.MarsCacheExtend;
 import com.github.howwrite.mars.sdk.facade.MarsJsonHandler;
-import com.github.howwrite.mars.sdk.facade.MarsWxUtils;
 import com.github.howwrite.mars.sdk.facade.impl.cache.MarsCacheExtendImpl;
 import com.github.howwrite.mars.sdk.facade.impl.cache.MarsRedisCache;
 import com.github.howwrite.mars.sdk.facade.impl.json.FastJsonHandler;
@@ -12,17 +11,20 @@ import com.github.howwrite.mars.sdk.facade.impl.json.JacksonJsonHandler;
 import com.github.howwrite.mars.sdk.filter.MarsFilter;
 import com.github.howwrite.mars.sdk.support.MarsResolver;
 import com.github.howwrite.mars.sdk.support.MarsReturnValueHandler;
-import com.github.howwrite.mars.sdk.utils.http.HttpUtils;
+import com.github.howwrite.mars.sdk.utils.WxUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
+import javax.annotation.Resource;
 import java.util.List;
 
 /**
@@ -31,17 +33,21 @@ import java.util.List;
  * @create 2019/12/15 15:38
  */
 @Configuration
+@ComponentScan
 @EnableConfigurationProperties({MarsProperties.class, MarsWxProperties.class})
 public class MarsStarterAutoConfiguration implements WebMvcConfigurer {
 
+    @Resource
+    private WxUtils wxUtils;
+
     @Override
     public void addArgumentResolvers(List<HandlerMethodArgumentResolver> resolvers) {
-        resolvers.add(0, new MarsResolver());
+        resolvers.add(0, new MarsResolver(wxUtils));
     }
 
     @Override
     public void addReturnValueHandlers(List<HandlerMethodReturnValueHandler> handlers) {
-        handlers.add(0, new MarsReturnValueHandler());
+        handlers.add(0, new MarsReturnValueHandler(wxUtils));
     }
 
     @Bean
@@ -56,8 +62,8 @@ public class MarsStarterAutoConfiguration implements WebMvcConfigurer {
     @Bean
     @ConditionalOnMissingBean(MarsCacheExtend.class)
     @ConditionalOnClass(name = "org.springframework.data.redis.core.RedisTemplate")
-    public MarsCacheExtend accessTokenRedisCache() {
-        return new MarsRedisCache();
+    public MarsCacheExtend marsRedisCache(RedisTemplate redisTemplate) {
+        return new MarsRedisCache(redisTemplate);
     }
 
     @Bean
@@ -78,17 +84,5 @@ public class MarsStarterAutoConfiguration implements WebMvcConfigurer {
     @ConditionalOnClass(name = "com.alibaba.fastjson.JSONObject")
     public MarsJsonHandler fastJsonHandler() {
         return new FastJsonHandler();
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
-    public MarsWxUtils marsWxUtils() {
-        return new MarsWxUtils();
-    }
-
-    @Bean
-    @ConditionalOnMissingBean
-    public HttpUtils httpUtils() {
-        return new HttpUtils();
     }
 }

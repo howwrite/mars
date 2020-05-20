@@ -4,6 +4,7 @@ import com.github.howwrite.mars.sdk.exception.MarsJsonException;
 import com.github.howwrite.mars.sdk.facade.MarsJsonHandler;
 import lombok.extern.slf4j.Slf4j;
 import okhttp3.*;
+import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 
 import javax.annotation.Resource;
@@ -15,6 +16,7 @@ import java.util.function.Function;
  * @date 2020/4/16 下午8:13:41
  */
 @Slf4j
+@Component
 public class HttpUtils {
     private static final MediaType JSON_TYPE = MediaType.get("application/json; charset=utf-8");
     private static final OkHttpClient CLIENT = new OkHttpClient();

@@ -2,20 +2,20 @@ package com.github.howwrite.mars.sdk.facade.impl.cache;
 
 import com.github.howwrite.mars.sdk.facade.MarsCacheExtend;
 import com.github.howwrite.mars.sdk.info.CacheInfo;
+import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.util.ObjectUtils;
 
-import javax.annotation.Resource;
 import java.util.concurrent.TimeUnit;
 
 /**
  * @author howwrite
  * @date 2020/4/30 下午1:43:32
  */
+@RequiredArgsConstructor
 public class MarsRedisCache implements MarsCacheExtend {
 
-    @Resource
-    private RedisTemplate<String, Object> redisTemplate;
+    private final RedisTemplate<String, Object> redisTemplate;
 
     @Override
     public void saveValue(String key, Object value, Integer expires) {
