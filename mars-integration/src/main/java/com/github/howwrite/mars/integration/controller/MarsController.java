@@ -5,7 +5,6 @@ import com.github.howwrite.mars.integration.support.MarsMessageHandler;
 import com.github.howwrite.mars.sdk.request.*;
 import com.github.howwrite.mars.sdk.response.BaseMarsResponse;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.core.OrderComparator;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.CollectionUtils;
@@ -22,7 +21,6 @@ import java.util.Optional;
  * @date 2020/3/22 下午1:04:22
  */
 @Controller
-@ConditionalOnBean(MarsMessageHandler.class)
 public class MarsController {
     private List<MarsMessageHandler> messageHandlers;
 

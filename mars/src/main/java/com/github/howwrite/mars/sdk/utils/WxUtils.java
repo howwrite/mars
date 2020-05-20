@@ -12,6 +12,7 @@ import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
 
 import java.io.IOException;
@@ -26,6 +27,7 @@ import java.util.Map;
  * @Description 微信消息工具类，涉及消息加解密
  * @date 2019/12/15 21:50
  */
+@Component
 public class WxUtils {
     private static final
     Logger log = LoggerFactory.getLogger(WxUtils.class);
