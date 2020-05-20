@@ -11,6 +11,7 @@ import com.github.howwrite.mars.sdk.utils.http.HttpUtils;
 import com.google.common.io.ByteStreams;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ObjectUtils;
 
@@ -29,6 +30,7 @@ import java.util.Map;
  * @date 2020/4/16 下午7:33:12
  */
 @Slf4j
+@Component
 public class MarsWxUtils {
     @Resource
     private HttpUtils httpUtils;

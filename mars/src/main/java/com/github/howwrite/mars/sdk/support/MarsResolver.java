@@ -6,6 +6,7 @@ import com.github.howwrite.mars.sdk.enums.MarsRequestTypeEnum;
 import com.github.howwrite.mars.sdk.exception.MarsException;
 import com.github.howwrite.mars.sdk.request.BaseMarsRequest;
 import com.github.howwrite.mars.sdk.utils.WxUtils;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.MethodParameter;
@@ -20,7 +21,6 @@ import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
 import javax.annotation.Nonnull;
-import javax.annotation.Resource;
 import javax.servlet.ServletInputStream;
 import javax.servlet.http.HttpServletRequest;
 import java.lang.reflect.InvocationTargetException;
@@ -35,11 +35,12 @@ import java.util.Map;
  * @author howwrite
  * @date 2020/3/4 下午7:37:55
  */
+@RequiredArgsConstructor
 public class MarsResolver implements HandlerMethodArgumentResolver {
     private static final Logger log = LoggerFactory.getLogger(MarsResolver.class);
     private static final Map<Class<? extends BaseMarsRequest>, List<Method>> CLASS_METHOD_MAP = new HashMap<>();
-    @Resource
-    private WxUtils wxUtils;
+
+    private final WxUtils wxUtils;
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
