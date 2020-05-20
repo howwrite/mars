@@ -5,7 +5,6 @@ import com.github.howwrite.mars.sdk.config.MarsWxProperties;
 import com.github.howwrite.mars.sdk.facade.MarsCacheExtend;
 import com.github.howwrite.mars.sdk.facade.MarsJsonHandler;
 import com.github.howwrite.mars.sdk.facade.impl.cache.MarsCacheExtendImpl;
-import com.github.howwrite.mars.sdk.facade.impl.cache.MarsRedisCache;
 import com.github.howwrite.mars.sdk.facade.impl.json.FastJsonHandler;
 import com.github.howwrite.mars.sdk.facade.impl.json.JacksonJsonHandler;
 import com.github.howwrite.mars.sdk.filter.MarsFilter;
@@ -14,12 +13,12 @@ import com.github.howwrite.mars.sdk.support.MarsReturnValueHandler;
 import com.github.howwrite.mars.sdk.utils.WxUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingClass;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.HandlerMethodReturnValueHandler;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -60,13 +59,7 @@ public class MarsStarterAutoConfiguration implements WebMvcConfigurer {
     }
 
     @Bean
-    @ConditionalOnMissingBean(MarsCacheExtend.class)
-    @ConditionalOnClass(name = "org.springframework.data.redis.core.RedisTemplate")
-    public MarsCacheExtend marsRedisCache(RedisTemplate redisTemplate) {
-        return new MarsRedisCache(redisTemplate);
-    }
-
-    @Bean
+    @ConditionalOnMissingClass("org.springframework.data.redis.core.RedisTemplate")
     @ConditionalOnMissingBean(MarsCacheExtend.class)
     public MarsCacheExtend accessTokenCacheExtendImpl() {
         return new MarsCacheExtendImpl();
