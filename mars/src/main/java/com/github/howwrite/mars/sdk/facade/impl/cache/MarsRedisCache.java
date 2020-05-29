@@ -3,10 +3,7 @@ package com.github.howwrite.mars.sdk.facade.impl.cache;
 import com.github.howwrite.mars.sdk.facade.MarsCacheExtend;
 import com.github.howwrite.mars.sdk.info.CacheInfo;
 import lombok.RequiredArgsConstructor;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.stereotype.Component;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.util.ObjectUtils;
 
 import java.util.concurrent.TimeUnit;
@@ -15,22 +12,19 @@ import java.util.concurrent.TimeUnit;
  * @author howwrite
  * @date 2020/4/30 下午1:43:32
  */
-@Component
-@ConditionalOnMissingBean(MarsCacheExtend.class)
-@ConditionalOnClass(name = "org.springframework.data.redis.core.RedisTemplate")
 @RequiredArgsConstructor
 public class MarsRedisCache implements MarsCacheExtend {
 
-    private final RedisTemplate<String, Object> redisTemplate;
+    private final StringRedisTemplate redisTemplate;
 
     @Override
-    public void saveValue(String key, Object value, Integer expires) {
+    public void saveValue(String key, String value, Integer expires) {
         redisTemplate.opsForValue().set(key, value, expires, TimeUnit.SECONDS);
     }
 
     @Override
     public CacheInfo getValue(String key) {
-        Object value = redisTemplate.opsForValue().get(key);
+        String value = redisTemplate.opsForValue().get(key);
         if (ObjectUtils.isEmpty(value)) {
             return CacheInfo.empty(key);
         }
