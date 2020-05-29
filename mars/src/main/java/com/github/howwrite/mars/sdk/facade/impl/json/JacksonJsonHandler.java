@@ -3,14 +3,12 @@ package com.github.howwrite.mars.sdk.facade.impl.json;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.github.howwrite.mars.sdk.exception.MarsJsonException;
 import com.github.howwrite.mars.sdk.facade.MarsJsonHandler;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 /**
  * @author howwrite
@@ -52,14 +50,24 @@ public class JacksonJsonHandler implements MarsJsonHandler {
             Map.Entry<String, JsonNode> next = fields.next();
             String key = next.getKey();
             JsonNode value = next.getValue();
-            if (!value.isValueNode()) {
-                result.put(key, parseMap(value));
-            } else if (value.isTextual()) {
-                result.put(key, value.asText());
-            } else if (value.isInt()) {
-                result.put(key, value.asInt());
-            }
+            result.put(key, parseObject(value));
         }
         return result;
+    }
+
+    private Object parseObject(JsonNode value) {
+        if (value.isArray()) {
+            ArrayNode arrayNode = (ArrayNode) value;
+            List<Object> array = new ArrayList<>();
+            arrayNode.forEach(it -> array.add(parseObject(it)));
+            return array;
+        } else if (value.isTextual()) {
+            return value.asText();
+        } else if (value.isInt()) {
+            return value.asInt();
+        } else if (!value.isValueNode()) {
+            return parseMap(value);
+        }
+        return null;
     }
 }

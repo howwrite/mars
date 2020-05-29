@@ -25,9 +25,18 @@ public class MarsConstants {
      * 获取临时媒体资源的地址
      */
     public static final String GET_TEMP_MEDIA_RES_URL = "https://api.weixin.qq.com/cgi-bin/media/get";
+    /**
+     * 获取微信callback IP地址
+     */
+    public static final String GET_CALLBACK_IP_URL = "https://api.weixin.qq.com/cgi-bin/getcallbackip";
+    /**
+     * 获取微信API接口IP
+     */
+    public static final String GET_API_DOMAIN_IP_LIST = "https://api.weixin.qq.com/cgi-bin/get_api_domain_ip";
 
     public static final String GET_ACCESS_TOKEN_DEVELOP_URL = "https://developers.weixin.qq.com/doc/offiaccount/Basic_Information/Get_access_token.html";
     public static final String GET_TEMP_RESOURCES_DEVELOP_URL = "https://developers.weixin.qq.com/doc/offiaccount/Asset_Management/Get_temporary_materials.html";
+    public static final String GET_THE_WECHAT_SERVER_IP_ADDRESS_DEVELOP_URL = "https://developers.weixin.qq.com/doc/offiaccount/Basic_Information/Get_the_WeChat_server_IP_address.html";
 
     /**
      * 获取AccessToken响应中的AccessToken的key

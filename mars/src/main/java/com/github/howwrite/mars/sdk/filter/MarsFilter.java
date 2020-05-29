@@ -3,9 +3,9 @@ package com.github.howwrite.mars.sdk.filter;
 import com.github.howwrite.mars.sdk.constants.MarsConstants;
 import com.github.howwrite.mars.sdk.exception.MarsException;
 import com.github.howwrite.mars.sdk.utils.WxUtils;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-import javax.annotation.Resource;
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -17,11 +17,11 @@ import java.io.IOException;
  * @date 2019/12/15 15:25
  */
 @Slf4j
+@RequiredArgsConstructor
 public class MarsFilter implements Filter {
     public static final int ORDER = 0;
 
-    @Resource
-    private WxUtils wxUtils;
+    private final WxUtils wxUtils;
 
     /**
      * 对于 get 请求，计算出校验码直接返回
