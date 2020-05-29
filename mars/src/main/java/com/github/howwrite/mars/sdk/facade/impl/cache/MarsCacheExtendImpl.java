@@ -17,18 +17,18 @@ import java.util.concurrent.ConcurrentHashMap;
  * @date 2020/5/5 下午3:57:47
  */
 public class MarsCacheExtendImpl implements MarsCacheExtend {
-    private final Map<String, Object> objectMap = new ConcurrentHashMap<>();
+    private final Map<String, String> objectMap = new ConcurrentHashMap<>();
     private final Map<String, LocalDateTime> expireTimeMap = new ConcurrentHashMap<>();
 
     @Override
-    public void saveValue(String key, Object value, Integer expires) {
+    public void saveValue(String key, String value, Integer expires) {
         objectMap.put(key, value);
         expireTimeMap.put(key, LocalDateTime.now().plusSeconds(expires.longValue()));
     }
 
     @Override
     public @NotNull CacheInfo getValue(String key) {
-        Object o = objectMap.get(key);
+        String o = objectMap.get(key);
         if (ObjectUtils.isEmpty(o)) {
             return CacheInfo.empty(key);
         }
@@ -39,6 +39,8 @@ public class MarsCacheExtendImpl implements MarsCacheExtend {
         if (seconds > 0) {
             return new CacheInfo(o, (int) seconds);
         }
+        objectMap.remove(key);
+        expireTimeMap.remove(key);
         return CacheInfo.empty(key);
     }
 }

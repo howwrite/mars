@@ -15,10 +15,10 @@ import lombok.NoArgsConstructor;
 @Data
 public class CacheInfo extends BaseMarsInfo {
     private static final long serialVersionUID = 3558016049304803970L;
-    private Object value;
+    private String value;
     private Integer expires;
 
-    public CacheInfo(Object value, Integer expires) {
+    public CacheInfo(String value, Integer expires) {
         this.value = value;
         this.expires = expires;
     }

@@ -18,7 +18,7 @@ public interface MarsCacheExtend {
      * @param value   要保存的值
      * @param expires token有效时间，单位: 秒
      */
-    void saveValue(String key, Object value, Integer expires);
+    void saveValue(String key, String value, Integer expires);
 
     /**
      * 获取缓存值
