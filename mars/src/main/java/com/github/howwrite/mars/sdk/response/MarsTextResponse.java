@@ -15,6 +15,10 @@ import lombok.ToString;
 @ToString(callSuper = true)
 public class MarsTextResponse extends BaseMarsResponse {
     private static final long serialVersionUID = -3283535043994565082L;
+    /**
+     * 文本消息内容
+     * 经测试，本字段不可超过682个字符，因为微信官方没有提到为何不可超过682字符，遂本框架不对此条件约束
+     */
     private String content;
 
     @Override
