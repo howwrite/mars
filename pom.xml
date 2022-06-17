@@ -28,7 +28,7 @@
         <dom4j.version>2.1.1</dom4j.version>
         <guava.version>28.1-jre</guava.version>
         <hutool.version>5.2.5</hutool.version>
-        <fastjson.version>1.2.68</fastjson.version>
+        <fastjson.version>1.2.83</fastjson.version>
     </properties>
     <dependencyManagement>
         <dependencies>
